@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `Person` (
 	`PersonID`	    integer PRIMARY KEY,
 	`FirstName`	    text NOT NULL,
 	`LastName`	    text NOT NULL,
-    'SchooID'       integer,
+    'SchoolID'      integer,
     `CategoryID`    integer NOT NULL,
     `Email`	        text
 );
