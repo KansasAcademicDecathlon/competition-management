@@ -4,7 +4,7 @@ Select School.SchoolName, Person.FirstName, Person.LastName from Person
 join School on School.SchoolID=Person.SchoolID
 where Person.CategoryID=4;
 
-/* How to get a list of students for a schools */
+/* How to get a list of students for a school */
 Select School.SchoolName, Person.FirstName, Person.LastName, Category.CategoryDescription from Person
 join School on School.SchoolID=Person.SchoolID
 join Category on Category.CategoryID=Person.CategoryID
