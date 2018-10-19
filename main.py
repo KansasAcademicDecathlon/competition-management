@@ -26,6 +26,8 @@ def main():
 
     if args.command == 'roster':
         contest.generate_roster_csv()
+    if args.command == 'TeamImportData':
+        contest.generate_TeamImportData()
 
 
 if __name__ == "__main__":

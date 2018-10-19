@@ -19,7 +19,12 @@ CREATE TABLE IF NOT EXISTS `TestingAppointment` (
 DROP TABLE IF EXISTS `School`;
 CREATE TABLE IF NOT EXISTS `School` (
 	`SchoolID`	    integer PRIMARY KEY,
-	`SchoolName`    text NOT NULL
+	`SchoolName`    text NOT NULL,
+	`Address1`      text NOT NULL,
+	`Address2`      text,
+	`City`          text NOT NULL,
+	`State`         text NOT NULL,
+	`ZipCode`       integer NOT NULL
 );
 DROP TABLE IF EXISTS `Room`;
 CREATE TABLE IF NOT EXISTS `Room` (

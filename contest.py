@@ -39,6 +39,11 @@ class Contest(object):
             CREATE TABLE IF NOT EXISTS `School` (
                 `SchoolID`	    integer PRIMARY KEY,
                 `SchoolName`    text NOT NULL
+                `Address1`      text NOT NULL,
+                `Address2`      text,
+                `City`          text NOT NULL,
+                `State`         text NOT NULL,
+                `ZipCode`       integer NOT NULL
             );
             DROP TABLE IF EXISTS `Room`;
             CREATE TABLE IF NOT EXISTS `Room` (
@@ -128,6 +133,34 @@ class Contest(object):
 
         # Transform the results into a list of IDs
         return [i[0] for i in self.conn.execute(query_string, (school_id,))]
+
+    def generate_TeamImportData(self):
+        """
+        Generate the TeamImportData.csv file
+        Number,School Name,Address1,Address2,City,State,Zip Code,Division,\
+            Category,Region
+        """
+        fieldnames = ['SchoolID', 'SchoolName',
+                      'Address1', 'Address2',
+                      'City', 'State', 'ZipCode']
+
+        with open("TeamImportData.csv", "wb") as csvfile:
+            csvwriter = csv.writer(csvfile)
+
+            for school in self.conn.execute("SELECT * FROM School"):
+                # Pull the revelent fields from the query result for output
+                # TODO add handling for filedname is not present
+                row = []
+                # row = [school[i] for i in fieldnames]
+                for i in fieldnames:
+                    if i in school.keys():
+                        logging.debug(": ".join([i, str(school[i])]))
+                        row.append(school[i])
+                    else:
+                        logging.debug(i + " not present")
+                        row.append("")
+                logging.debug(row)
+                csvwriter.writerow(row)
 
     def generate_roster_csv(self):
         """
