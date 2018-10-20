@@ -38,7 +38,7 @@ class Contest(object):
             DROP TABLE IF EXISTS `School`;
             CREATE TABLE IF NOT EXISTS `School` (
                 `SchoolID`	    integer PRIMARY KEY,
-                `SchoolName`    text NOT NULL
+                `SchoolName`    text NOT NULL,
                 `Address1`      text NOT NULL,
                 `Address2`      text,
                 `City`          text NOT NULL,
@@ -133,6 +133,26 @@ class Contest(object):
 
         # Transform the results into a list of IDs
         return [i[0] for i in self.conn.execute(query_string, (school_id,))]
+
+    def generate_CoachImport(self):
+        """
+        Generate the CoachImport.csv file
+        TeamID,First Name,Last Name,Email,Phone,Extension,Fax,Website
+        """
+        query_string = """Select SchoolID, FirstName, LastName from Person
+                        where Person.CategoryID=4"""
+
+        with open("CoachImport.csv", "wb") as csvfile:
+            csvwriter = csv.writer(csvfile)
+
+            for coach in self.conn.execute(query_string):
+                row = [coach['SchoolID']]
+                row.append(coach['FirstName'])
+                row.append(coach['LastName'])
+                for _ in range(5):
+                    row.append([''])
+                logging.debug(row)
+                csvwriter.writerow(row)
 
     def generate_TeamImportData(self):
         """
