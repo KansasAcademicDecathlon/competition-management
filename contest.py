@@ -150,7 +150,7 @@ class Contest(object):
                 row.append(coach['FirstName'])
                 row.append(coach['LastName'])
                 for _ in range(5):
-                    row.append([''])
+                    row.append('')
                 logging.debug(row)
                 csvwriter.writerow(row)
 
