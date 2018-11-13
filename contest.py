@@ -162,7 +162,9 @@ class Contest(object):
         """
         fieldnames = ['SchoolID', 'SchoolName',
                       'Address1', 'Address2',
-                      'City', 'State', 'ZipCode']
+                      'City', 'State', 'ZipCode',
+                      'Division', 'Category',
+                      'Region']
 
         with open("TeamImportData.csv", "wb") as csvfile:
             csvwriter = csv.writer(csvfile)
