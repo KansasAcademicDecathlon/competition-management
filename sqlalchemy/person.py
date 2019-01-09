@@ -1,23 +1,21 @@
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 
-
-Base = declarative_base()
+from base import Base
 
 
 class Person(Base):
     __tablename__ = 'Person'
 
-    id = Column(Integer, primary_key=True)
-    first_name = Column(String, nullable=False)
-    last_name = Column(String, nullable=False)
-    category_id = Column(Integer, ForeignKey('Category.id'), nullable=False)
-    category = relationship("Category")
-    #  SchoolID = Column(Integer)
-    #  CategoryID = Column(Integer)
-    email = Column(String)
+    PersonID = Column(Integer, primary_key=True)
+    FirstName = Column(String, nullable=False)
+    LastName = Column(String, nullable=False)
+    CategoryID = Column(Integer, ForeignKey('Category.id'), nullable=False)
+    Category = relationship("Category")
+    SchoolID = Column(Integer)
+    School = relationship("School")
+    Email = Column(String)
 
     def __repr__(self):
         return "<Person(first='%s', last='%s', email='%s')>" % (

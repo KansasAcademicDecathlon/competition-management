@@ -15,3 +15,7 @@ ToDo
 * Doc strings
 * Test and see if it runs
 * Create default categories
+
+2019-01JAN-08
+https://stackoverflow.com/questions/7478403/sqlalchemy-classes-across-files
+Explained how to use a single instance of declarative_base()
