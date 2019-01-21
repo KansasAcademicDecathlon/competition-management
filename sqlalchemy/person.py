@@ -11,7 +11,7 @@ class Person(Base):
     PersonID = Column(Integer, primary_key=True)
     FirstName = Column(String, nullable=False)
     LastName = Column(String, nullable=False)
-    CategoryID = Column(Integer, ForeignKey('Category.id'), nullable=False)
+    CategoryID = Column(Integer, ForeignKey('Category.CategoryID'), nullable=False)
     Category = relationship("Category")
     SchoolID = Column(Integer)
     School = relationship("School")

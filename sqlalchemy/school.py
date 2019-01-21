@@ -16,7 +16,7 @@ class School(Base):
     State = Column(String, nullable=False)
     ZipCode = Column(String, nullable=False)
 
-    category_id = Column(Integer, ForeignKey('Category.id'), nullable=False)
+    category_id = Column(Integer, ForeignKey('Category.CategoryID'), nullable=False)
     category = relationship("Category")
     #  SchoolID = Column(Integer)
     #  CategoryID = Column(Integer)
