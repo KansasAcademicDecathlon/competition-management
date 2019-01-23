@@ -13,7 +13,7 @@ class Person(Base):
     LastName = Column(String, nullable=False)
     CategoryID = Column(Integer, ForeignKey('Category.CategoryID'), nullable=False)
     Category = relationship("Category")
-    SchoolID = Column(Integer)
+    SchoolID = Column(Integer, ForeignKey('School.SchoolID'))
     School = relationship("School")
     Email = Column(String)
 
