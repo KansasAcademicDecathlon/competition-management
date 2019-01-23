@@ -16,12 +16,6 @@ class School(Base):
     State = Column(String, nullable=False)
     ZipCode = Column(String, nullable=False)
 
-    category_id = Column(Integer, ForeignKey('Category.CategoryID'), nullable=False)
-    category = relationship("Category")
-    #  SchoolID = Column(Integer)
-    #  CategoryID = Column(Integer)
-    email = Column(String)
-
     def __repr__(self):
         return "<User(first='%s', last='%s', email='%s')>" % (
             self.first_name, self.last_name, self.email)
