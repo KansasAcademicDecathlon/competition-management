@@ -12,6 +12,29 @@ from base import Base
 
 engine = create_engine('sqlite:///:memory:', echo=True)
 
+
+def generate_CoachImport():
+    """
+    Generate the CoachImport.csv file
+    TeamID,First Name,Last Name,Email,Phone,Extension,Fax,Website
+    """
+
+    Session = sessionmaker(bind=engine)
+
+    session = Session()
+
+    with open("CoachImport.csv", "wb") as csvfile:
+        csvwriter = csv.writer(csvfile)
+
+        coaches = session.query(Category).filter_by(
+            CategoryDescription='Coach').one().people
+        for coach in coaches:
+            row = [coach.SchoolID, coach.FirstName, coach.LastName,
+                   coach.Email, "", "", "", "www"]
+            logging.debug(row)
+            csvwriter.writerow(row)
+
+
 def generate_TeamImportData():
     """
     Generate the TeamImportData.csv file
