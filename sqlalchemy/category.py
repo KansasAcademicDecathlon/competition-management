@@ -13,4 +13,4 @@ class Category(Base):
 
     def __repr__(self):
         return "<Category(description='%s')>" % (
-            self.description)
+            self.CategoryDescription)

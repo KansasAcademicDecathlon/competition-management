@@ -19,4 +19,4 @@ class Person(Base):
 
     def __repr__(self):
         return "<Person(first='%s', last='%s', email='%s')>" % (
-            self.first_name, self.last_name, self.email)
+            self.FirstName, self.LastName, self.Email)
