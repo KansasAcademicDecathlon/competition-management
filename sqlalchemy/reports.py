@@ -1,4 +1,5 @@
 import csv
+import distutils.dir_util
 import logging
 from category import Category
 from person import Person
@@ -22,8 +23,8 @@ def generate_CoachImport():
     Session = sessionmaker(bind=engine)
 
     session = Session()
-
-    with open("CoachImport.csv", "wb") as csvfile:
+    distutils.dir_util.mkpath("outputs")
+    with open("outputs/CoachImport.csv", "wb") as csvfile:
         csvwriter = csv.writer(csvfile)
 
         coaches = session.query(Category).filter_by(
@@ -44,7 +45,8 @@ def generate_TeamImportData():
     Session = sessionmaker(bind=engine)
 
     session = Session()
-    with open("TeamImportData.csv", "wb") as csvfile:
+    distutils.dir_util.mkpath("outputs")
+    with open("outputs/TeamImportData.csv", "wb") as csvfile:
         csvwriter = csv.writer(csvfile)
 
         for school in session.query(School).order_by(School.SchoolID):
