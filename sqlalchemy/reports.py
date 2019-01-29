@@ -2,6 +2,7 @@ import csv
 import distutils.dir_util
 import logging
 from category import Category
+from lunch import Lunch
 from person import Person
 from school import School
 
@@ -132,6 +133,51 @@ def generate_TeamImportData():
                    ]
             logging.debug(row)
             csvwriter.writerow(row)
+
+
+def generate_totals():
+    """
+    Report the following totals:
+    * Teams
+    * Decathletes
+    * Volunteers
+    * Lunches
+        * Total per type
+        * Grand Total
+    """
+
+    Session = sessionmaker(bind=engine)
+    session = Session()
+
+    lunch_choices = Lunch.lunches(session)
+    print lunch_choices
+
+    decathelets = 0
+    volunteers = 0
+    lunch_counts = {l.LunchID: 0 for l in lunch_choices}
+
+    print lunch_counts
+
+    for school in session.query(School).order_by(School.SchoolID):
+        for person in school.people:
+            if person.is_student():
+                decathelets += 1
+                print person
+            elif person.Category.CategoryDescription == 'Volunteer':
+                volunteers += 1
+
+            lunch_counts[person.LunchID] += 1
+
+
+    print 'Decathletes {0}'.format(decathelets)
+    print 'Volunteers {0}'.format(volunteers)
+    print 'Lunches'
+    lunch_total = 0
+    for l in lunch_choices:
+        print "{0:8} {1}".format(l.LunchDescription, lunch_counts[l.LunchID])
+        lunch_total += lunch_counts[l.LunchID]
+    print "{0:8} {1}".format("Total", lunch_total)
+
 
 Base.metadata.create_all(engine)
 

@@ -14,6 +14,7 @@ class Person(Base):
     CategoryID = Column(Integer, ForeignKey(
         'Category.CategoryID'), nullable=False)
     Category = relationship("Category")
+    LunchID = Column(Integer, ForeignKey('Lunch.LunchID'), nullable=False)
     SchoolID = Column(Integer, ForeignKey('School.SchoolID'))
     School = relationship("School")
     StudentID = Column(Integer, unique=True)
@@ -25,3 +26,10 @@ class Person(Base):
 
     def FullName(self):
         return "{0} {1}".format(self.FirstName, self.LastName)
+
+    def is_student(self):
+        """
+        Is the given person object a student?
+        @return True if a student
+        """
+        return self.StudentID != None
