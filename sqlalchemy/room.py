@@ -10,7 +10,7 @@ class Room(Base):
     RoomID = Column(Integer, primary_key=True)
     Name = Column(String, nullable=False)
     Building = Column(String, nullable=False)
-
+    RoomKind = Column(String, nullable=False)
     speeches = relationship("Person", foreign_keys="[Person.SpeechRoomID]")
 
     def __repr__(self):

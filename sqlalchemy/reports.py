@@ -40,6 +40,58 @@ def generate_CoachImport():
             csvwriter.writerow(row)
 
 
+def generate_room_schedules():
+    """
+    Generate HTML schedules of Decatheletes per speech room
+    """
+    Session = sessionmaker(bind=engine)
+
+    session = Session()
+    distutils.dir_util.mkpath("outputs")
+
+    for room in session.query(Room).filter_by(RoomKind='S').order_by(Room.RoomID):
+        title = "{0} {1}".format(room.Building, room.Name)
+
+        markup = HTML()
+        head = markup.head
+        # See https://www.w3schools.com/css/tryit.asp?filename=trycss_table_striped for an example of a striped table
+        head.style(
+            """
+            table, th, td {
+                border: 2px solid black;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 5px;
+                text-align: left;
+            }
+            tr:nth-child(even) {background-color: #f2f2f2;}""")
+        head.title(title)
+        body = markup.body
+
+        # School name
+        p = body.p
+        p.b(title)
+
+        # Table of students
+        table = body.table
+
+        table_row = table.tr
+        table_row.th("Time")
+        table_row.th("Student #")
+        table_row.th("Name")
+
+        # for speech in sorted(room.speeches, Person.time_sort()):
+        for student in session.query(Person).filter_by(SpeechRoomID=room.RoomID).order_by(Person.SpeechRoomTime):
+            table_row = table.tr
+            table_row.td(str(student.SpeechRoomTime))
+            table_row.td(str(student.StudentID))
+            table_row.td(student.FullName())
+
+        with open("outputs/"+title+".html", "wb") as rosterfile:
+            rosterfile.write(str(markup))
+
+
 def generate_rosters():
     """
     Generate HTML rosters per school
