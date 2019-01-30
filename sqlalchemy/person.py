@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Time
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -19,6 +19,13 @@ class Person(Base):
     School = relationship("School")
     StudentID = Column(Integer, unique=True)
     Email = Column(String)
+
+    SpeechRoomID = Column(Integer, ForeignKey('Room.RoomID'))
+    SpeechRoomTime = Column(Time)
+    SpeechRoom = relationship("Room", foreign_keys=[SpeechRoomID])
+
+    TestingRoomID = Column(Integer, ForeignKey('Room.RoomID'))
+    TestingRoom = relationship("Room", foreign_keys=[TestingRoomID])
 
     def __repr__(self):
         return "<Person(first='%s', last='%s', email='%s')>" % (

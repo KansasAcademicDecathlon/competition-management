@@ -4,6 +4,7 @@ import logging
 from category import Category
 from lunch import Lunch
 from person import Person
+from room import Room
 from school import School
 
 from html import HTML
@@ -109,6 +110,45 @@ def generate_rosters():
         with open("outputs/"+school.SchoolName+".html", "wb") as rosterfile:
             rosterfile.write(str(markup))
         # print school.people
+
+
+def generate_StudentRooms():
+    """
+    Generate the StudentRooms.csv file
+    Student Number,Team Number,First Name,Last Name,Speech Room,\
+        Speech Time,Interview Room,Interview Time,Testing Room,\
+        Test Seat,Essay Room,HSV,Grade,Transcript,Permission,\
+        CodeofConduct,ActivityForm
+    """
+    Session = sessionmaker(bind=engine)
+
+    session = Session()
+    distutils.dir_util.mkpath("outputs")
+
+    with open("outputs/StudentRooms.csv", "wb") as csvfile:
+        csvwriter = csv.writer(csvfile)
+
+        students = session.query(Person).order_by(Person.StudentID).all()
+        for student in students:
+            if not student.is_student():
+                continue
+
+            row = [student.StudentID, student.SchoolID, student.FirstName, student.LastName,
+                   student.SpeechRoom.Name,  # Speech Room
+                   student.SpeechRoomTime,  # Speech Time
+                   student.SpeechRoom.Name,  # Interview Room
+                   student.SpeechRoomTime,  # Interview Time
+                   student.TestingRoom.Name,  # Testing Room
+                   "1",  # Testing Seat
+                   "EssayRoomA",  # Essay Room
+                   student.CategoryID,
+                   "9",  # Grade
+                   "False",  # Transcript
+                   "False",  # Permission
+                   "False",  # CodeofConduct
+                   "False"  # ActivityForm
+                   ]
+            csvwriter.writerow(row)
 
 
 def generate_TeamImportData():
