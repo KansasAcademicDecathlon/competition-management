@@ -16,3 +16,10 @@ class Room(Base):
     def __repr__(self):
         return "<Room(building='%s', name='%s')>" % (
             self.Building, self.Name)
+
+    def full_name(self):
+        """
+        Building and Name strings combined
+        @return concatenated string
+        """
+        return "{0} {1}".format(self.Building, self.Name)

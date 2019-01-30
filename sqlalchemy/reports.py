@@ -50,8 +50,6 @@ def generate_room_schedules():
     distutils.dir_util.mkpath("outputs")
 
     for room in session.query(Room).filter_by(RoomKind='S').order_by(Room.RoomID):
-        title = "{0} {1}".format(room.Building, room.Name)
-
         markup = HTML()
         head = markup.head
         # See https://www.w3schools.com/css/tryit.asp?filename=trycss_table_striped for an example of a striped table
@@ -66,12 +64,12 @@ def generate_room_schedules():
                 text-align: left;
             }
             tr:nth-child(even) {background-color: #f2f2f2;}""")
-        head.title(title)
+        head.title(room.full_name())
         body = markup.body
 
         # School name
         p = body.p
-        p.b(title)
+        p.b(room.full_name())
 
         # Table of students
         table = body.table
@@ -88,7 +86,7 @@ def generate_room_schedules():
             table_row.td(str(student.StudentID))
             table_row.td(student.FullName())
 
-        with open("outputs/"+title+".html", "wb") as rosterfile:
+        with open("outputs/"+room.full_name()+".html", "wb") as rosterfile:
             rosterfile.write(str(markup))
 
 
@@ -147,6 +145,8 @@ def generate_rosters():
         table_row.th("Student #")
         table_row.th("Name")
         table_row.th("Category")
+        table_row.th("Speech Room")
+        table_row.th("Speech Time")
 
         students = session.query(Person).filter_by(
             SchoolID=school.SchoolID).order_by(Person.StudentID).all()
@@ -158,6 +158,8 @@ def generate_rosters():
             table_row.td(str(student.StudentID))
             table_row.td(student.FullName())
             table_row.td(student.Category.CategoryDescription)
+            table_row.td(student.SpeechRoom.full_name())
+            table_row.td(str(student.SpeechRoomTime))
 
         with open("outputs/"+school.SchoolName+".html", "wb") as rosterfile:
             rosterfile.write(str(markup))
@@ -259,7 +261,6 @@ def generate_totals():
                 volunteers += 1
 
             lunch_counts[person.LunchID] += 1
-
 
     print 'Decathletes {0}'.format(decathelets)
     print 'Volunteers {0}'.format(volunteers)
