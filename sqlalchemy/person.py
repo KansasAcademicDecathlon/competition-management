@@ -21,7 +21,7 @@ class Person(Base):
     Email = Column(String)
 
     SpeechRoomID = Column(Integer, ForeignKey('Room.RoomID'))
-    SpeechRoomTime = Column(Time)
+    SpeechTime = Column(Time)
     SpeechRoom = relationship("Room", foreign_keys=[SpeechRoomID])
 
     TestingRoomID = Column(Integer, ForeignKey('Room.RoomID'))

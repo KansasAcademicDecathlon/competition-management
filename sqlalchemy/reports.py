@@ -64,9 +64,9 @@ def generate_room_schedules(session):
         table_row.th("Name")
 
         # for speech in sorted(room.speeches, Person.time_sort()):
-        for student in session.query(Person).filter_by(SpeechRoomID=room.RoomID).order_by(Person.SpeechRoomTime):
+        for student in session.query(Person).filter_by(SpeechRoomID=room.RoomID).order_by(Person.SpeechTime):
             table_row = table.tr
-            table_row.td(str(student.SpeechRoomTime))
+            table_row.td(str(student.SpeechTime))
             table_row.td(str(student.StudentID))
             table_row.td(student.FullName())
 
@@ -139,7 +139,7 @@ def generate_rosters(session):
             table_row.td(student.FullName())
             table_row.td(student.Category.CategoryDescription)
             table_row.td(student.SpeechRoom.full_name())
-            table_row.td(str(student.SpeechRoomTime))
+            table_row.td(str(student.SpeechTime))
 
         with open("outputs/"+school.SchoolName+".html", "wb") as rosterfile:
             rosterfile.write(str(markup))
@@ -165,9 +165,9 @@ def generate_StudentRooms(session):
 
             row = [student.StudentID, student.SchoolID, student.FirstName, student.LastName,
                    student.SpeechRoom.Name,  # Speech Room
-                   student.SpeechRoomTime,  # Speech Time
+                   student.SpeechTime,  # Speech Time
                    student.SpeechRoom.Name,  # Interview Room
-                   student.SpeechRoomTime,  # Interview Time
+                   student.SpeechTime,  # Interview Time
                    student.TestingRoom.Name,  # Testing Room
                    "1",  # Testing Seat
                    "EssayRoomA",  # Essay Room
