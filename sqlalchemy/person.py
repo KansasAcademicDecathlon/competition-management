@@ -26,6 +26,7 @@ class Person(Base):
 
     TestingRoomID = Column(Integer, ForeignKey('Room.RoomID'))
     TestingRoom = relationship("Room", foreign_keys=[TestingRoomID])
+    TestingTime = Column(Time)
 
     def __repr__(self):
         return "<Person(first='%s', last='%s', email='%s')>" % (

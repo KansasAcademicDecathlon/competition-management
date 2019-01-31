@@ -127,6 +127,8 @@ def generate_rosters(session):
         table_row.th("Category")
         table_row.th("Speech Room")
         table_row.th("Speech Time")
+        table_row.th("Test Room")
+        table_row.th("Test Time")
 
         students = session.query(Person).filter_by(
             SchoolID=school.SchoolID).order_by(Person.StudentID).all()
@@ -140,6 +142,8 @@ def generate_rosters(session):
             table_row.td(student.Category.CategoryDescription)
             table_row.td(student.SpeechRoom.description())
             table_row.td(str(student.SpeechTime))
+            table_row.td(student.TestingRoom.description())
+            table_row.td(str(student.TestingTime))
 
         with open("outputs/"+school.SchoolName+".html", "wb") as rosterfile:
             rosterfile.write(str(markup))
