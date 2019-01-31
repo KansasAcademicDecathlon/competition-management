@@ -1,5 +1,4 @@
 import csv
-import distutils.dir_util
 import logging
 from category import Category
 from lunch import Lunch
@@ -10,24 +9,13 @@ from school import School
 from html import HTML
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
-from base import Base
-
-engine = create_engine('sqlite:///:memory:', echo=True)
-
-
-def generate_CoachImport():
+def generate_CoachImport(session):
     """
     Generate the CoachImport.csv file
     TeamID,First Name,Last Name,Email,Phone,Extension,Fax,Website
+    @param session Session object
     """
-
-    Session = sessionmaker(bind=engine)
-
-    session = Session()
-    distutils.dir_util.mkpath("outputs")
     with open("outputs/CoachImport.csv", "wb") as csvfile:
         csvwriter = csv.writer(csvfile)
 
@@ -40,15 +28,11 @@ def generate_CoachImport():
             csvwriter.writerow(row)
 
 
-def generate_room_schedules():
+def generate_room_schedules(session):
     """
     Generate HTML schedules of Decatheletes per speech room
+    @param session Session object
     """
-    Session = sessionmaker(bind=engine)
-
-    session = Session()
-    distutils.dir_util.mkpath("outputs")
-
     for room in session.query(Room).filter_by(RoomKind='S').order_by(Room.RoomID):
         markup = HTML()
         head = markup.head
@@ -90,15 +74,11 @@ def generate_room_schedules():
             rosterfile.write(str(markup))
 
 
-def generate_rosters():
+def generate_rosters(session):
     """
     Generate HTML rosters per school
+    @param session Session object
     """
-    Session = sessionmaker(bind=engine)
-
-    session = Session()
-    distutils.dir_util.mkpath("outputs")
-
     for school in session.query(School).order_by(School.SchoolID):
         # print school.SchoolName
         markup = HTML()
@@ -166,19 +146,15 @@ def generate_rosters():
         # print school.people
 
 
-def generate_StudentRooms():
+def generate_StudentRooms(session):
     """
     Generate the StudentRooms.csv file
     Student Number,Team Number,First Name,Last Name,Speech Room,\
         Speech Time,Interview Room,Interview Time,Testing Room,\
         Test Seat,Essay Room,HSV,Grade,Transcript,Permission,\
         CodeofConduct,ActivityForm
+    @param session Session object
     """
-    Session = sessionmaker(bind=engine)
-
-    session = Session()
-    distutils.dir_util.mkpath("outputs")
-
     with open("outputs/StudentRooms.csv", "wb") as csvfile:
         csvwriter = csv.writer(csvfile)
 
@@ -205,16 +181,13 @@ def generate_StudentRooms():
             csvwriter.writerow(row)
 
 
-def generate_TeamImportData():
+def generate_TeamImportData(session):
     """
     Generate the TeamImportData.csv file
     Number,School Name,Address1,Address2,City,State,Zip Code,Division,\
         Category,Region
+    @param session Session object
     """
-    Session = sessionmaker(bind=engine)
-
-    session = Session()
-    distutils.dir_util.mkpath("outputs")
     with open("outputs/TeamImportData.csv", "wb") as csvfile:
         csvwriter = csv.writer(csvfile)
 
@@ -229,7 +202,7 @@ def generate_TeamImportData():
             csvwriter.writerow(row)
 
 
-def generate_totals():
+def generate_totals(session):
     """
     Report the following totals:
     * Teams
@@ -238,11 +211,8 @@ def generate_totals():
     * Lunches
         * Total per type
         * Grand Total
+    @param session Session object
     """
-
-    Session = sessionmaker(bind=engine)
-    session = Session()
-
     lunch_choices = Lunch.lunches(session)
     print lunch_choices
 
@@ -270,10 +240,3 @@ def generate_totals():
         print "{0:8} {1}".format(l.LunchDescription, lunch_counts[l.LunchID])
         lunch_total += lunch_counts[l.LunchID]
     print "{0:8} {1}".format("Total", lunch_total)
-
-
-Base.metadata.create_all(engine)
-
-print Category.__table__
-print School.__table__
-print Person.__table__

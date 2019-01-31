@@ -5,7 +5,7 @@ python:
 install:
   - pip install -r sqlalchemy/requirements.txt
 # command to run tests
-script: python sqlalchemy/reports.py
+script: python sqlalchemy/main.py --test
 branches:
   only:
     - features/sqlalchemy
