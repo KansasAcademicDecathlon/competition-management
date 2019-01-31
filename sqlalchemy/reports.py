@@ -48,12 +48,12 @@ def generate_room_schedules(session):
                 text-align: left;
             }
             tr:nth-child(even) {background-color: #f2f2f2;}""")
-        head.title(room.full_name())
+        head.title(room.description())
         body = markup.body
 
         # School name
         p = body.p
-        p.b(room.full_name())
+        p.b(room.description())
 
         # Table of students
         table = body.table
@@ -70,7 +70,7 @@ def generate_room_schedules(session):
             table_row.td(str(student.StudentID))
             table_row.td(student.FullName())
 
-        with open("outputs/"+room.full_name()+".html", "wb") as rosterfile:
+        with open("outputs/"+room.description()+".html", "wb") as rosterfile:
             rosterfile.write(str(markup))
 
 
@@ -138,7 +138,7 @@ def generate_rosters(session):
             table_row.td(str(student.StudentID))
             table_row.td(student.FullName())
             table_row.td(student.Category.CategoryDescription)
-            table_row.td(student.SpeechRoom.full_name())
+            table_row.td(student.SpeechRoom.description())
             table_row.td(str(student.SpeechTime))
 
         with open("outputs/"+school.SchoolName+".html", "wb") as rosterfile:
