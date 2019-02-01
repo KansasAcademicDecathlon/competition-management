@@ -14,6 +14,7 @@ class Person(Base):
     CategoryID = Column(Integer, ForeignKey(
         'Category.CategoryID'), nullable=False)
     Category = relationship("Category")
+    Lunch = relationship("Lunch")
     LunchID = Column(Integer, ForeignKey('Lunch.LunchID'), nullable=False)
     SchoolID = Column(Integer, ForeignKey('School.SchoolID'))
     School = relationship("School")
@@ -27,6 +28,8 @@ class Person(Base):
     TestingRoomID = Column(Integer, ForeignKey('Room.RoomID'))
     TestingRoom = relationship("Room", foreign_keys=[TestingRoomID])
     TestingTime = Column(Time)
+
+    VolunteerTime = Column(String)
 
     def __repr__(self):
         return "<Person(first='%s', last='%s', email='%s')>" % (

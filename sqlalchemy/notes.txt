@@ -19,3 +19,9 @@ ToDo
 2019-01JAN-08
 https://stackoverflow.com/questions/7478403/sqlalchemy-classes-across-files
 Explained how to use a single instance of declarative_base()
+
+2019-01JAN-19
+Switched to desktop
+/c/Python27/Scripts/virtualenv.exe env
+source ./env/Scripts/activate
+pip install -r ./sqlalchemy/requirements.txt

@@ -46,6 +46,7 @@ def main():
         Reports.generate_StudentRooms(session)
         Reports.generate_room_schedules(session)
         Reports.generate_totals(session)
+        Reports.generate_volunteer_list(session)
 
 
 if __name__ == "__main__":

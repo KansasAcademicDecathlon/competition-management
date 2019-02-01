@@ -10,6 +10,20 @@ from html import HTML
 
 from sqlalchemy.ext.declarative import declarative_base
 
+# See https://www.w3schools.com/css/tryit.asp?filename=trycss_table_striped
+# for an example of a striped table
+TABLE_STYLE_STRING = """
+            table, th, td {
+                border: 2px solid black;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 5px;
+                text-align: left;
+            }
+            tr:nth-child(even) {background-color: #f2f2f2;}"""
+
+
 def generate_CoachImport(session):
     """
     Generate the CoachImport.csv file
@@ -36,18 +50,7 @@ def generate_room_schedules(session):
     for room in session.query(Room).filter_by(RoomKind='S').order_by(Room.RoomID):
         markup = HTML()
         head = markup.head
-        # See https://www.w3schools.com/css/tryit.asp?filename=trycss_table_striped for an example of a striped table
-        head.style(
-            """
-            table, th, td {
-                border: 2px solid black;
-                border-collapse: collapse;
-            }
-            th, td {
-                padding: 5px;
-                text-align: left;
-            }
-            tr:nth-child(even) {background-color: #f2f2f2;}""")
+        head.style(TABLE_STYLE_STRING)
         head.title(room.description())
         body = markup.body
 
@@ -83,18 +86,7 @@ def generate_rosters(session):
         # print school.SchoolName
         markup = HTML()
         head = markup.head
-        # See https://www.w3schools.com/css/tryit.asp?filename=trycss_table_striped for an example of a striped table
-        head.style(
-            """
-            table, th, td {
-                border: 2px solid black;
-                border-collapse: collapse;
-            }
-            th, td {
-                padding: 5px;
-                text-align: left;
-            }
-            tr:nth-child(even) {background-color: #f2f2f2;}""")
+        head.style(TABLE_STYLE_STRING)
         head.title(school.SchoolName)
         body = markup.body
 
@@ -244,3 +236,47 @@ def generate_totals(session):
         print "{0:8} {1}".format(l.LunchDescription, lunch_counts[l.LunchID])
         lunch_total += lunch_counts[l.LunchID]
     print "{0:8} {1}".format("Total", lunch_total)
+
+
+def generate_volunteer_list(session):
+    """
+    Generate a list of volunteers
+    @param session Session object
+    """
+    markup = HTML()
+    head = markup.head
+    head.style(TABLE_STYLE_STRING)
+    head.title("Volunteers")
+    body = markup.body
+
+    p = body.p
+    p.b("Volunteers")
+
+    # Table of volunteers
+    table = body.table
+
+    table_row = table.tr
+    table_row.th("School")
+    table_row.th("Name")
+    table_row.th("Lunch")
+    table_row.th("Time")
+    table_row.th("Morning Assignment")
+    table_row.th("Afternoon Assignment")
+
+    volunteers = session.query(Category).filter_by(
+        CategoryDescription='Volunteer').one().people
+
+    for volunteer in volunteers:
+        table_row = table.tr
+        table_row.td(volunteer.School.SchoolName)
+        table_row.td(volunteer.FullName())
+        table_row.td(volunteer.Lunch.LunchDescription)
+        table_row.td(volunteer.VolunteerTime)
+        table_row.td(" ")  # Leave a blank for manually filling in assigment
+        assignment_string = " "
+        if volunteer.VolunteerTime == "Morning":
+            assignment_string = "------------------"
+        table_row.td.center(assignment_string)
+
+    with open("outputs/volunteers.html", "wb") as rosterfile:
+        rosterfile.write(str(markup))
