@@ -43,4 +43,4 @@ class Person(Base):
         Is the given person object a student?
         @return True if a student
         """
-        return self.StudentID != None
+        return self.StudentID is None

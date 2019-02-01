@@ -126,7 +126,7 @@ def generate_rosters(session):
             SchoolID=school.SchoolID).order_by(Person.StudentID).all()
         for student in students:
             # All participating students will have a valid StudentID
-            if student.StudentID == None:
+            if student.StudentID is None:
                 continue
             table_row = table.tr
             table_row.td(str(student.StudentID))
@@ -159,7 +159,10 @@ def generate_StudentRooms(session):
             if not student.is_student():
                 continue
 
-            row = [student.StudentID, student.SchoolID, student.FirstName, student.LastName,
+            row = [student.StudentID,
+                   student.SchoolID,
+                   student.FirstName,
+                   student.LastName,
                    student.SpeechRoom.Name,  # Speech Room
                    student.SpeechTime,  # Speech Time
                    student.SpeechRoom.Name,  # Interview Room
