@@ -110,6 +110,10 @@ def generate_rosters(session):
             p.b("Coach ")
             p += person.FullName()
 
+        # Count of students
+        count_paragraph = body.p
+        count_paragraph.b("Count ")
+
         # Table of students
         table = body.table
 
@@ -122,12 +126,14 @@ def generate_rosters(session):
         table_row.th("Test Room")
         table_row.th("Test Time")
 
+        student_count = 0
         students = session.query(Person).filter_by(
             SchoolID=school.SchoolID).order_by(Person.StudentID).all()
         for student in students:
             # All participating students will have a valid StudentID
             if student.StudentID is None:
                 continue
+            student_count += 1
             table_row = table.tr
             table_row.td(str(student.StudentID))
             table_row.td(student.FullName())
@@ -136,6 +142,8 @@ def generate_rosters(session):
             table_row.td(str(student.SpeechTime))
             table_row.td(student.TestingRoom.description())
             table_row.td(str(student.TestingTime))
+
+        count_paragraph += str(student_count)
 
         with open("outputs/"+school.SchoolName+".html", "wb") as rosterfile:
             rosterfile.write(str(markup))
