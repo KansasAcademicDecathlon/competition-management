@@ -114,7 +114,7 @@ def generate_rosters(session):
         table = body.table
 
         table_row = table.tr
-        table_row.th("Student #")
+        table_row.th("ID")
         table_row.th("Name")
         table_row.th("Category")
         table_row.th("Speech Room")
