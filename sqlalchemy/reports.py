@@ -144,8 +144,9 @@ def generate_rosters(session):
 
         count_paragraph += str(student_count)
 
-        with open("outputs/"+school.SchoolName+".html", "wb") as rosterfile:
-            rosterfile.write(str(markup))
+        if student_count > 0:
+            with open("outputs/"+school.SchoolName+".html", "wb") as rosterfile:
+                rosterfile.write(str(markup))
         # print school.people
 
 
