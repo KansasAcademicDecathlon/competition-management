@@ -1,14 +1,13 @@
 import csv
+from html import HTML
 import logging
+
 from category import Category
 from lunch import Lunch
 from person import Person
 from room import Room
 from school import School
 
-from html import HTML
-
-from sqlalchemy.ext.declarative import declarative_base
 
 # See https://www.w3schools.com/css/tryit.asp?filename=trycss_table_striped
 # for an example of a striped table
@@ -24,6 +23,7 @@ TABLE_STYLE_STRING = """
             tr:nth-child(even) {background-color: #f2f2f2;}"""
 
 
+# pylint: disable=invalid-name
 def generate_CoachImport(session):
     """
     Generate the CoachImport.csv file
@@ -54,9 +54,8 @@ def generate_room_schedules(session):
         head.title(room.description())
         body = markup.body
 
-        # School name
-        p = body.p
-        p.b(room.description())
+        # Room name
+        body.p.b.b(room.description())
 
         # Table of students
         table = body.table
@@ -91,14 +90,14 @@ def generate_rosters(session):
         body = markup.body
 
         # Team Number
-        p = body.p
-        p.b("Team Number ")
-        p += "{:02d}".format(school.SchoolID)
+        team_number_paragaph = body.p
+        team_number_paragaph.b("Team Number ")
+        team_number_paragaph += "{:02d}".format(school.SchoolID)
 
         # School name
-        p = body.p
-        p.b("School ")
-        p += school.SchoolName
+        school_name_paragraph = body.p
+        school_name_paragraph.b("School ")
+        school_name_paragraph += school.SchoolName
 
         # List out the coach(es)
         people = session.query(Person).filter_by(
@@ -106,9 +105,9 @@ def generate_rosters(session):
         for person in people:
             if person.Category.CategoryDescription != "Coach":
                 continue
-            p = body.p
-            p.b("Coach ")
-            p += person.FullName()
+            coach_paragraph = body.p
+            coach_paragraph.b("Coach ")
+            coach_paragraph += person.FullName()
 
         # Count of students
         count_paragraph = body.p
@@ -150,6 +149,7 @@ def generate_rosters(session):
         # print school.people
 
 
+# pylint: disable=invalid-name
 def generate_StudentRooms(session):
     """
     Generate the StudentRooms.csv file
@@ -184,10 +184,11 @@ def generate_StudentRooms(session):
                    "False",  # Permission
                    "False",  # CodeofConduct
                    "False"  # ActivityForm
-                   ]
+                  ]
             csvwriter.writerow(row)
 
 
+# pylint: disable=invalid-name
 def generate_TeamImportData(session):
     """
     Generate the TeamImportData.csv file
@@ -204,7 +205,7 @@ def generate_TeamImportData(session):
                    "MEDIUM",  # Division
                    "MEDIUM",  # Category
                    "Kansas"   # Region
-                   ]
+                  ]
             logging.debug(row)
             csvwriter.writerow(row)
 
@@ -243,9 +244,9 @@ def generate_totals(session):
     print 'Volunteers {0}'.format(volunteers)
     print 'Lunches'
     lunch_total = 0
-    for l in lunch_choices:
-        print "{0:8} {1}".format(l.LunchDescription, lunch_counts[l.LunchID])
-        lunch_total += lunch_counts[l.LunchID]
+    for lunch_choice in lunch_choices:
+        print "{0:8} {1}".format(lunch_choice.LunchDescription, lunch_counts[lunch_choice.LunchID])
+        lunch_total += lunch_counts[lunch_choice.LunchID]
     print "{0:8} {1}".format("Total", lunch_total)
 
 
@@ -260,8 +261,7 @@ def generate_volunteer_list(session):
     head.title("Volunteers")
     body = markup.body
 
-    p = body.p
-    p.b("Volunteers")
+    body.p.b("Volunteers")
 
     # Table of volunteers
     table = body.table
