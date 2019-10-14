@@ -9,6 +9,8 @@ from room import Room
 from school import School
 
 
+STUDENT_ID_STYLE_STRING="text-align:right;"
+
 # See https://www.w3schools.com/css/tryit.asp?filename=trycss_table_striped
 # for an example of a striped table
 TABLE_STYLE_STRING = """
@@ -21,6 +23,8 @@ TABLE_STYLE_STRING = """
                 text-align: left;
             }
             tr:nth-child(even) {background-color: #f2f2f2;}"""
+
+TIME_STYLE_STRING="text-align:right;"
 
 
 # pylint: disable=invalid-name
@@ -68,8 +72,8 @@ def generate_room_schedules(session):
         # for speech in sorted(room.speeches, Person.time_sort()):
         for student in session.query(Person).filter_by(SpeechRoomID=room.RoomID).order_by(Person.SpeechTime):
             table_row = table.tr
-            table_row.td(str(student.SpeechTime))
-            table_row.td(str(student.StudentID))
+            table_row.td(str(student.SpeechTime), style=TIME_STYLE_STRING)
+            table_row.td(str(student.StudentID), style=STUDENT_ID_STYLE_STRING)
             table_row.td(student.FullName())
 
         with open("outputs/"+room.description()+".html", "wb") as rosterfile:
@@ -134,13 +138,13 @@ def generate_rosters(session):
                 continue
             student_count += 1
             table_row = table.tr
-            table_row.td(str(student.StudentID))
+            table_row.td(str(student.StudentID), style=STUDENT_ID_STYLE_STRING)
             table_row.td(student.FullName())
             table_row.td(student.Category.CategoryDescription)
             table_row.td(student.SpeechRoom.description())
-            table_row.td(str(student.SpeechTime))
+            table_row.td(str(student.SpeechTime), style=TIME_STYLE_STRING)
             table_row.td(student.TestingRoom.description())
-            table_row.td(str(student.TestingTime))
+            table_row.td(str(student.TestingTime), style=TIME_STYLE_STRING)
 
         count_paragraph += str(student_count)
 
