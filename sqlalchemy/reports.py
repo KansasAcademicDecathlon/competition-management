@@ -14,15 +14,22 @@ STUDENT_ID_STYLE_STRING="text-align:right;"
 # See https://www.w3schools.com/css/tryit.asp?filename=trycss_table_striped
 # for an example of a striped table
 TABLE_STYLE_STRING = """
-            table, th, td {
-                border: 2px solid black;
-                border-collapse: collapse;
-            }
-            th, td {
-                padding: 5px;
-                text-align: left;
-            }
-            tr:nth-child(even) {background-color: #f2f2f2;}"""
+        table.students,
+        th.students,
+        td.students {
+            border: 2px solid black;
+            border-collapse: collapse;
+        }
+
+        th.students,
+        td.students {
+            padding: 5px;
+            text-align: left;
+        }
+
+        tr.students:nth-child(even) {
+            background-color: #f2f2f2;
+        }"""
 
 TIME_STYLE_STRING="text-align:right;"
 
@@ -118,16 +125,16 @@ def generate_rosters(session):
         count_paragraph.b("Count ")
 
         # Table of students
-        table = body.table
+        table = body.table(klass="students")
 
-        table_row = table.tr
-        table_row.th("ID")
-        table_row.th("Name")
-        table_row.th("Category")
-        table_row.th("Speech Room")
-        table_row.th("Speech Time")
-        table_row.th("Test Room")
-        table_row.th("Test Time")
+        table_row = table.tr(klass="students")
+        table_row.th("ID", klass="students")
+        table_row.th("Name", klass="students")
+        table_row.th("Category", klass="students")
+        table_row.th("Speech Room", klass="students")
+        table_row.th("Speech Time", klass="students")
+        table_row.th("Test Room", klass="students")
+        table_row.th("Test Time", klass="students")
 
         student_count = 0
         students = session.query(Person).filter_by(
@@ -137,14 +144,14 @@ def generate_rosters(session):
             if student.StudentID is None:
                 continue
             student_count += 1
-            table_row = table.tr
-            table_row.td(str(student.StudentID), style=STUDENT_ID_STYLE_STRING)
-            table_row.td(student.FullName())
-            table_row.td(student.Category.CategoryDescription)
-            table_row.td(student.SpeechRoom.description())
-            table_row.td(str(student.SpeechTime), style=TIME_STYLE_STRING)
-            table_row.td(student.TestingRoom.description())
-            table_row.td(str(student.TestingTime), style=TIME_STYLE_STRING)
+            table_row = table.tr(klass="students")
+            table_row.td(str(student.StudentID), klass="students", style=STUDENT_ID_STYLE_STRING)
+            table_row.td(student.FullName(), klass="students")
+            table_row.td(student.Category.CategoryDescription, klass="students")
+            table_row.td(student.SpeechRoom.description(), klass="students")
+            table_row.td(str(student.SpeechTime), klass="students", style=TIME_STYLE_STRING)
+            table_row.td(student.TestingRoom.description(), klass="students")
+            table_row.td(str(student.TestingTime), klass="students", style=TIME_STYLE_STRING)
 
         count_paragraph += str(student_count)
 
