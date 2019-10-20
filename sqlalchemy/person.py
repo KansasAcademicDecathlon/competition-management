@@ -38,6 +38,18 @@ class Person(Base):
     def FullName(self):
         return "{0} {1}".format(self.FirstName, self.LastName)
 
+    def TestingTimeFormatted(self):
+        """
+        Return the TestingTime as a formatted string
+        """
+        return self.TestingTime.strftime("%H:%M")
+
+    def SpeechTimeFormatted(self):
+        """
+        Return the SpeechTime as a formatted string
+        """
+        return self.SpeechTime.strftime("%H:%M")
+
     def is_student(self):
         """
         Is the given person object a student?

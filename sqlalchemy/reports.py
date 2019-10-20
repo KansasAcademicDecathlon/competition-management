@@ -79,7 +79,7 @@ def generate_room_schedules(session):
         # for speech in sorted(room.speeches, Person.time_sort()):
         for student in session.query(Person).filter_by(SpeechRoomID=room.RoomID).order_by(Person.SpeechTime):
             table_row = table.tr
-            table_row.td(str(student.SpeechTime), style=TIME_STYLE_STRING)
+            table_row.td(student.SpeechTimeFormatted(), style=TIME_STYLE_STRING)
             table_row.td(str(student.StudentID), style=STUDENT_ID_STYLE_STRING)
             table_row.td(student.FullName())
 
@@ -149,9 +149,9 @@ def generate_rosters(session):
             table_row.td(student.FullName(), klass="students")
             table_row.td(student.Category.CategoryDescription, klass="students")
             table_row.td(student.SpeechRoom.description(), klass="students")
-            table_row.td(str(student.SpeechTime), klass="students", style=TIME_STYLE_STRING)
+            table_row.td(student.SpeechTimeFormatted(), klass="students", style=TIME_STYLE_STRING)
             table_row.td(student.TestingRoom.description(), klass="students")
-            table_row.td(str(student.TestingTime), klass="students", style=TIME_STYLE_STRING)
+            table_row.td(student.TestingTimeFormatted(), klass="students", style=TIME_STYLE_STRING)
 
         count_paragraph += str(student_count)
 
