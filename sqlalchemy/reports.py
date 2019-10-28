@@ -105,14 +105,14 @@ def generate_rosters(session):
         roster_header = body.table(style="margin-left:auto; margin-right:0")
         # See https://stackoverflow.com/questions/6368061/most-common-way-of-writing-a-html-table-with-vertical-headers
         # Team Number
-        team_number_paragaph = roster_header.tr
-        team_number_paragaph.th("Team Number", style=HEADER_STYLE_STRING)
-        team_number_paragaph.td("{:02d}".format(school.SchoolID), style="text-align:right;")
+        team_number_row = roster_header.tr
+        team_number_row.th("Team Number", style=HEADER_STYLE_STRING)
+        team_number_row.td("{:02d}".format(school.SchoolID), style="text-align:right;")
 
         # School name
-        school_name_paragraph = roster_header.tr
-        school_name_paragraph.th("School", style=HEADER_STYLE_STRING)
-        school_name_paragraph.td(school.SchoolName)
+        school_name_row = roster_header.tr
+        school_name_row.th("School", style=HEADER_STYLE_STRING)
+        school_name_row.td(school.SchoolName)
 
         # List out the coach(es)
         people = session.query(Person).filter_by(
@@ -120,13 +120,13 @@ def generate_rosters(session):
         for person in people:
             if person.Category.CategoryDescription != "Coach":
                 continue
-            coach_paragraph = roster_header.tr
-            coach_paragraph.th("Coach", style=HEADER_STYLE_STRING)
-            coach_paragraph.td(person.FullName())
+            coach_row = roster_header.tr
+            coach_row.th("Coach", style=HEADER_STYLE_STRING)
+            coach_row.td(person.FullName())
 
         # Count of students
-        count_paragraph = roster_header.tr
-        count_paragraph.th("Count", style=HEADER_STYLE_STRING)
+        count_row = roster_header.tr
+        count_row.th("Count", style=HEADER_STYLE_STRING)
 
         # Insert spacing paragraph
         body.p()
@@ -160,7 +160,7 @@ def generate_rosters(session):
             table_row.td(student.TestingRoom.description(), klass="students")
             table_row.td(student.TestingTimeFormatted(), klass="students", style=TIME_STYLE_STRING)
 
-        count_paragraph.td(str(student_count), style="text-align:right;")
+        count_row.td(str(student_count), style="text-align:right;")
 
         if student_count > 0:
             with open("outputs/"+school.SchoolName+".html", "wb") as rosterfile:
