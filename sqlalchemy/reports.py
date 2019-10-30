@@ -155,9 +155,9 @@ def generate_rosters(session):
             table_row.td(str(student.StudentID), klass="students", style=STUDENT_ID_STYLE_STRING)
             table_row.td(student.FullName(), klass="students")
             table_row.td(student.Category.CategoryDescription, klass="students")
-            table_row.td(student.SpeechRoom.description(), klass="students")
+            table_row.td(student.SpeechRoomFormatted(), klass="students")
             table_row.td(student.SpeechTimeFormatted(), klass="students", style=TIME_STYLE_STRING)
-            table_row.td(student.TestingRoom.description(), klass="students")
+            table_row.td(student.TestingRoomFormatted(), klass="students")
             table_row.td(student.TestingTimeFormatted(), klass="students", style=TIME_STYLE_STRING)
 
         count_row.td(str(student_count), style="text-align:right;")
@@ -190,11 +190,11 @@ def generate_StudentRooms(session):
                    student.SchoolID,
                    student.FirstName,
                    student.LastName,
-                   student.SpeechRoom.Name,  # Speech Room
-                   student.SpeechTime,  # Speech Time
-                   student.SpeechRoom.Name,  # Interview Room
-                   student.SpeechTime,  # Interview Time
-                   student.TestingRoom.Name,  # Testing Room
+                   student.SpeechRoomFormatted(),  # Speech Room
+                   student.SpeechTimeFormatted(),  # Speech Time
+                   student.SpeechRoomFormatted(),  # Interview Room
+                   student.SpeechTimeFormatted(),  # Interview Time
+                   student.TestingRoomFormatted(),  # Testing Room
                    "1",  # Testing Seat
                    "EssayRoomA",  # Essay Room
                    student.CategoryID,
@@ -301,7 +301,10 @@ def generate_volunteer_list(session):
         table_row.td(volunteer.School.SchoolName)
         table_row.td(volunteer.FullName())
         table_row.td(volunteer.Lunch.LunchDescription)
-        table_row.td(volunteer.VolunteerTime)
+        try:
+            table_row.td(volunteer.VolunteerTime)
+        except AttributeError:
+            table_row.td("????")
         table_row.td(" ")  # Leave a blank for manually filling in assigment
         assignment_string = " "
         if volunteer.VolunteerTime == "Morning":

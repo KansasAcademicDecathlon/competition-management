@@ -38,17 +38,41 @@ class Person(Base):
     def FullName(self):
         return "{0} {1}".format(self.FirstName, self.LastName)
 
+    def TestingRoomFormatted(self):
+        """
+        Return the Testing Room description as a formatted string
+        """
+        try:
+            return self.TestingRoom.description()
+        except AttributeError:
+            return "????"
+
     def TestingTimeFormatted(self):
         """
         Return the TestingTime as a formatted string
         """
-        return self.TestingTime.strftime("%H:%M")
+        try:
+            return self.TestingTime.strftime("%H:%M")
+        except AttributeError:
+            return "????"
+
+    def SpeechRoomFormatted(self):
+        """
+        Return the Speech Room description as a formatted string
+        """
+        try:
+            return self.SpeechRoom.description()
+        except AttributeError:
+            return "????"
 
     def SpeechTimeFormatted(self):
         """
         Return the SpeechTime as a formatted string
         """
-        return self.SpeechTime.strftime("%H:%M")
+        try:
+            return self.SpeechTime.strftime("%H:%M")
+        except AttributeError:
+            return "????"
 
     def is_student(self):
         """
