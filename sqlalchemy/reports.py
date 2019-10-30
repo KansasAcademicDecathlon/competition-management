@@ -258,14 +258,18 @@ def generate_totals(session):
     logging.debug(lunch_counts)
 
     for school in session.query(School).order_by(School.SchoolID):
+        student_count = 0
         for person in school.people:
             if person.is_student():
-                decathelets += 1
-                print person
+                student_count += 1
             elif person.Category.CategoryDescription == 'Volunteer':
                 volunteers += 1
 
             lunch_counts[person.LunchID] += 1
+
+        decathelets = decathelets + student_count
+        if school.people:
+            print '{0}: {1}'.format(school.SchoolName, student_count)
 
     print 'Decathletes {0}'.format(decathelets)
     print 'Volunteers {0}'.format(volunteers)
