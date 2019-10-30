@@ -240,6 +240,8 @@ def generate_totals(session):
     Report the following totals:
     * Teams
     * Decathletes
+        * Count per team
+        * Grand Total
     * Volunteers
     * Lunches
         * Total per type
@@ -247,13 +249,13 @@ def generate_totals(session):
     @param session Session object
     """
     lunch_choices = Lunch.lunches(session)
-    print lunch_choices
+    logging.debug(lunch_choices)
 
     decathelets = 0
     volunteers = 0
     lunch_counts = {l.LunchID: 0 for l in lunch_choices}
 
-    print lunch_counts
+    logging.debug(lunch_counts)
 
     for school in session.query(School).order_by(School.SchoolID):
         for person in school.people:
