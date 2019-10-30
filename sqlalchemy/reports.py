@@ -9,7 +9,7 @@ from room import Room
 from school import School
 
 
-STUDENT_ID_STYLE_STRING="text-align:right;"
+STUDENT_ID_STYLE_STRING = "text-align:right;"
 
 # See https://www.w3schools.com/css/tryit.asp?filename=trycss_table_striped
 # for an example of a striped table
@@ -31,7 +31,7 @@ TABLE_STYLE_STRING = """
             background-color: #f2f2f2;
         }"""
 
-TIME_STYLE_STRING="text-align:right;"
+TIME_STYLE_STRING = "text-align:right;"
 
 
 # pylint: disable=invalid-name
@@ -79,7 +79,8 @@ def generate_room_schedules(session):
         # for speech in sorted(room.speeches, Person.time_sort()):
         for student in session.query(Person).filter_by(SpeechRoomID=room.RoomID).order_by(Person.SpeechTime):
             table_row = table.tr
-            table_row.td(student.SpeechTimeFormatted(), style=TIME_STYLE_STRING)
+            table_row.td(student.SpeechTimeFormatted(),
+                         style=TIME_STYLE_STRING)
             table_row.td(str(student.StudentID), style=STUDENT_ID_STYLE_STRING)
             table_row.td(student.FullName())
 
@@ -107,7 +108,8 @@ def generate_rosters(session):
         # Team Number
         team_number_row = roster_header.tr
         team_number_row.th("Team Number", style=HEADER_STYLE_STRING)
-        team_number_row.td("{:02d}".format(school.SchoolID), style="text-align:right;")
+        team_number_row.td("{:02d}".format(
+            school.SchoolID), style="text-align:right;")
 
         # School name
         school_name_row = roster_header.tr
@@ -152,13 +154,17 @@ def generate_rosters(session):
                 continue
             student_count += 1
             table_row = table.tr(klass="students")
-            table_row.td(str(student.StudentID), klass="students", style=STUDENT_ID_STYLE_STRING)
+            table_row.td(str(student.StudentID), klass="students",
+                         style=STUDENT_ID_STYLE_STRING)
             table_row.td(student.FullName(), klass="students")
-            table_row.td(student.Category.CategoryDescription, klass="students")
+            table_row.td(student.Category.CategoryDescription,
+                         klass="students")
             table_row.td(student.SpeechRoomFormatted(), klass="students")
-            table_row.td(student.SpeechTimeFormatted(), klass="students", style=TIME_STYLE_STRING)
+            table_row.td(student.SpeechTimeFormatted(),
+                         klass="students", style=TIME_STYLE_STRING)
             table_row.td(student.TestingRoomFormatted(), klass="students")
-            table_row.td(student.TestingTimeFormatted(), klass="students", style=TIME_STYLE_STRING)
+            table_row.td(student.TestingTimeFormatted(),
+                         klass="students", style=TIME_STYLE_STRING)
 
         count_row.td(str(student_count), style="text-align:right;")
 
@@ -203,7 +209,7 @@ def generate_StudentRooms(session):
                    "False",  # Permission
                    "False",  # CodeofConduct
                    "False"  # ActivityForm
-                  ]
+                   ]
             csvwriter.writerow(row)
 
 
@@ -224,7 +230,7 @@ def generate_TeamImportData(session):
                    "MEDIUM",  # Division
                    "MEDIUM",  # Category
                    "Kansas"   # Region
-                  ]
+                   ]
             logging.debug(row)
             csvwriter.writerow(row)
 
@@ -264,7 +270,8 @@ def generate_totals(session):
     print 'Lunches'
     lunch_total = 0
     for lunch_choice in lunch_choices:
-        print "{0:8} {1}".format(lunch_choice.LunchDescription, lunch_counts[lunch_choice.LunchID])
+        print "{0:8} {1}".format(
+            lunch_choice.LunchDescription, lunch_counts[lunch_choice.LunchID])
         lunch_total += lunch_counts[lunch_choice.LunchID]
     print "{0:8} {1}".format("Total", lunch_total)
 
