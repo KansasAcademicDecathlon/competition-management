@@ -52,9 +52,16 @@ class Person(Base):
         Return the TestingTime as a formatted string
         """
         try:
-            return self.TestingTime.strftime("%H:%M")
+            return Person.TimeFormatted(self.TestingTime)
         except AttributeError:
             return "????"
+
+    @staticmethod
+    def TimeFormatted(time):
+        """
+        Return the time object as a formatted string
+        """
+        return time.strftime("%H:%M")
 
     def SpeechRoomFormatted(self):
         """
@@ -70,7 +77,7 @@ class Person(Base):
         Return the SpeechTime as a formatted string
         """
         try:
-            return self.SpeechTime.strftime("%H:%M")
+            return Person.TimeFormatted(self.SpeechTime)
         except AttributeError:
             return "????"
 
