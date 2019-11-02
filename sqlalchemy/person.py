@@ -18,7 +18,7 @@ class Person(Base):
     LunchID = Column(Integer, ForeignKey('Lunch.LunchID'), nullable=False)
     SchoolID = Column(Integer, ForeignKey('School.SchoolID'))
     School = relationship("School")
-    StudentID = Column(Integer, unique=True)
+    StudentID = Column(String, unique=True)
     Email = Column(String)
 
     SpeechRoomID = Column(Integer, ForeignKey('Room.RoomID'))
