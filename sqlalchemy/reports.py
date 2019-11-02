@@ -2,6 +2,8 @@ import csv
 from html import HTML
 import logging
 
+from itertools import chain, combinations
+
 from category import Category
 from lunch import Lunch
 from person import Person
@@ -253,23 +255,35 @@ def generate_totals(session):
     decathelets = 0
     volunteers = 0
     lunch_counts = {l.LunchID: 0 for l in lunch_choices}
+    # decathlete totals for each school. Used for testing room split calculation.
+    school_totals = dict()
 
     logging.debug(lunch_counts)
 
     for school in session.query(School).order_by(School.SchoolID):
-        student_count = 0
+        school_totals[school.SchoolName] = 0
         for person in school.people:
             if person.is_student():
-                student_count += 1
+                school_totals[school.SchoolName] += 1
             elif person.Category.CategoryDescription == 'Volunteer':
                 volunteers += 1
 
             lunch_counts[person.LunchID] += 1
 
-        decathelets = decathelets + student_count
-        if school.people:
-            print '{0}: {1}'.format(school.SchoolName, student_count)
+        decathelets = decathelets + school_totals[school.SchoolName]
 
+        if school_totals[school.SchoolName]:
+            print '{0}: {1}'.format(
+                school.SchoolName, school_totals[school.SchoolName])
+        else:
+            # Schools without decathletes should be removed from the room split calculation below
+            del school_totals[school.SchoolName]
+
+    best_combination = find_room_split(school_totals)
+
+    print 'First Testing Session'
+    for entry in best_combination:
+        print '* {0}'.format(entry)
     print 'Decathletes {0}'.format(decathelets)
     print 'Volunteers {0}'.format(volunteers)
     print 'Lunches'
@@ -333,3 +347,51 @@ def generate_volunteer_list(session):
 
     with open("outputs/volunteers.html", "wb") as rosterfile:
         rosterfile.write(str(markup))
+
+
+def powerset(iterable):
+    """
+    Compute all the different possible combinations of the given iterable
+    See https://docs.python.org/2.7/library/itertools.html#itertools-recipes
+    @return iterator
+    """
+    "powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"
+    s = list(iterable)
+    return chain.from_iterable(combinations(s, r) for r in range(len(s)+1))
+
+
+def find_room_split(counts):
+    """
+    Find the ideal room split given the different combinations of teams
+    @param counts Dictionary of school's number of team members
+    @return the optimum list of schools to test together. None if there is no optimum split.
+    """
+    grand_total = 0
+
+    for entry, value in counts.items():
+        grand_total = grand_total + value
+
+    # The optimum is an even split
+    optimum_count = grand_total / 2
+
+    # The maximum distance from the optimum is the optimum
+    distance_from_optimum = optimum_count
+
+    best_combination = None
+
+    # Compute all the possible combinations of schools using a powerset
+    combinations = list(powerset(counts))
+
+    for combination in combinations:
+        combination_total = 0
+        # Generate the total students for this combination
+        for school in combination:
+            combination_total = combination_total + counts[school]
+
+        if abs(optimum_count - combination_total) < distance_from_optimum:
+            best_combination = combination
+            logging.debug("New Best Combination: {}".format(best_combination))
+            distance_from_optimum = abs(optimum_count - combination_total)
+            logging.debug("Distance {}".format(distance_from_optimum))
+
+    return best_combination
