@@ -108,8 +108,7 @@ def generate_rosters(session):
         # Team Number
         team_number_row = roster_header.tr
         team_number_row.th("Team Number", style=HEADER_STYLE_STRING)
-        team_number_row.td("{:02d}".format(
-            school.SchoolID), style="text-align:right;")
+        team_number_row.td("{:02d}".format(school.SchoolID))
 
         # School name
         school_name_row = roster_header.tr
@@ -166,7 +165,7 @@ def generate_rosters(session):
             table_row.td(student.TestingTimeFormatted(),
                          klass="students", style=TIME_STYLE_STRING)
 
-        count_row.td(str(student_count), style="text-align:right;")
+        count_row.td(str(student_count))
 
         if student_count > 0:
             with open("outputs/"+school.SchoolName+".html", "wb") as rosterfile:
