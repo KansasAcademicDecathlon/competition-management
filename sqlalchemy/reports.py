@@ -98,7 +98,7 @@ def generate_rosters(session):
         markup = HTML()
         head = markup.head
         head.style(TABLE_STYLE_STRING)
-        head.title(school.SchoolName)
+        head.title(school.SchoolName + " Roster")
         body = markup.body
 
         HEADER_STYLE_STRING = "text-align:left;"
