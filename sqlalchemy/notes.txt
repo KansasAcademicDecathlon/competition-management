@@ -25,3 +25,6 @@ Switched to desktop
 /c/Python27/Scripts/virtualenv.exe env
 source ./env/Scripts/activate
 pip install -r ./sqlalchemy/requirements.txt
+
+2020-01JAN-21
+Using https://sqlitestudio.pl/index.rvt works well since it allows adding a row and populating it with data before comitting it to the database. DB Browser for SQLite insists on creating the database record before it can be populated. This leads to issues with the constraints on the variaous fields.
