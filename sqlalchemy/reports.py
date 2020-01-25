@@ -295,33 +295,41 @@ def generate_volunteer_list(session):
     body.p.b("Volunteers")
 
     # Table of volunteers
-    table = body.table
+    table = body.table(klass="students")
 
     table_row = table.tr
-    table_row.th("School")
-    table_row.th("Name")
-    table_row.th("Lunch")
-    table_row.th("Time")
-    table_row.th("Morning Assignment")
-    table_row.th("Afternoon Assignment")
+    table_row.th("School", klass="students")
+    table_row.th("Name", klass="students")
+    table_row.th("Lunch", klass="students")
+    table_row.th("Time", klass="students")
+    table_row.th("Morning Assignment", klass="students")
+    table_row.th("Afternoon Assignment", klass="students")
 
     volunteers = session.query(Category).filter_by(
         CategoryDescription='Volunteer').one().people
 
     for volunteer in volunteers:
-        table_row = table.tr
-        table_row.td(volunteer.School.SchoolName)
-        table_row.td(volunteer.FullName())
-        table_row.td(volunteer.Lunch.LunchDescription)
+        table_row = table.tr(klass="students")
+        table_row.td(volunteer.School.SchoolName, klass="students")
+        table_row.td(volunteer.FullName(), klass="students")
+        table_row.td(volunteer.Lunch.LunchDescription, klass="students")
         try:
-            table_row.td(volunteer.VolunteerTime)
+            volunteer_time_text = volunteer.VolunteerTime
         except AttributeError:
-            table_row.td("????")
-        table_row.td(" ")  # Leave a blank for manually filling in assigment
-        assignment_string = " "
+            volunteer_time_text = None
+
+        if not volunteer_time_text:
+            volunteer_time_text = "????"
+
+        table_row.td(volunteer_time_text, klass="students")
+        # Leave a blank for manually filling in assigment
+        table_row.td(" ", klass="students")
         if volunteer.VolunteerTime == "Morning":
-            assignment_string = "------------------"
-        table_row.td.center(assignment_string)
+            table_row.td(klass="students").hr(
+                style="border-top: 2px dotted black;")
+        else:
+            # Leave a blank for manually filling in assigment
+            table_row.td(" ", klass="students")
 
     with open("outputs/volunteers.html", "wb") as rosterfile:
         rosterfile.write(str(markup))
