@@ -144,7 +144,8 @@ def generate_rosters(session):
         table_row.th("Speech Room", klass="students")
         table_row.th("Speech Time", klass="students")
         table_row.th("Test Room", klass="students")
-        table_row.th("Test Time", klass="students")
+        table_row.th("AM Test Time", klass="students")
+        table_row.th("PM Test Time", klass="students")
 
         student_count = 0
         students = session.query(Person).filter_by(
@@ -165,6 +166,8 @@ def generate_rosters(session):
                          klass="students", style=TIME_STYLE_STRING)
             table_row.td(student.TestingRoomFormatted(), klass="students")
             table_row.td(student.TestingTimeFormatted(),
+                         klass="students", style=TIME_STYLE_STRING)
+            table_row.td("1:40 PM",
                          klass="students", style=TIME_STYLE_STRING)
 
         count_row.td(str(student_count))

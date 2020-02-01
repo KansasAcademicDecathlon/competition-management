@@ -61,7 +61,9 @@ class Person(Base):
         """
         Return the time object as a formatted string
         """
-        return time.strftime("%H:%M")
+        # Trick to remove leading zeros in a platform independent way
+        # https://stackoverflow.com/a/5900593
+        return time.strftime("X%I:%M %p").replace('X0', 'X').replace('X', '')
 
     def SpeechRoomFormatted(self):
         """
