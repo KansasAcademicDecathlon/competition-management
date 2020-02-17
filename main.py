@@ -1,7 +1,11 @@
 import argparse
+import distutils.dir_util
 import logging
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-import contest as ct
+from base import Base
+import reports as Reports
 
 
 def main():
@@ -10,8 +14,8 @@ def main():
                         default='contest.db')
     parser.add_argument('--log', help='Logging level',
                         default='ERROR', dest='loglevel')
-
-    parser.add_argument('command', help='Action to perform',)
+    parser.add_argument(
+        '--test', help='Use memory database for testing', action='store_true')
 
     args = parser.parse_args()
 
@@ -20,16 +24,29 @@ def main():
         raise ValueError('Invalid log level: %s' % args.loglevel)
     logging.basicConfig(level=numeric_level)
 
-    contest = ct.Contest()
+    if args.test:
+        engine = create_engine('sqlite:///:memory:', echo=True)
+    else:
+        engine = create_engine(
+            'sqlite:///{0}'.format(args.database), echo=True)
 
-    contest.open_database(args.database)
+    Base.metadata.create_all(engine)
 
-    if args.command == 'roster':
-        contest.generate_roster_csv()
-    if args.command == 'TeamImportData':
-        contest.generate_TeamImportData()
-    if args.command == 'CoachImport':
-        contest.generate_CoachImport()
+    Session = sessionmaker(bind=engine)
+
+    session = Session()
+
+    # Ensure the output directory exists
+    distutils.dir_util.mkpath("outputs")
+
+    if not args.test:
+        Reports.generate_TeamImportData(session)
+        Reports.generate_CoachImport(session)
+        Reports.generate_rosters(session)
+        Reports.generate_StudentRooms(session)
+        Reports.generate_room_schedules(session)
+        Reports.generate_volunteer_list(session)
+        Reports.generate_totals(session)
 
 
 if __name__ == "__main__":
