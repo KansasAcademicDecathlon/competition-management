@@ -1,0 +1,30 @@
+2019-01JAN-07
+Upgraded pip
+/c/Python27/python -m pip install --upgrade pip
+Installed virtualenv
+/c/Python27/python -m pip install virtualenv
+Created virtual enviroment
+/c/Python27/Scripts/virtualenv.exe env 
+Installed SQLAlchemy
+python -m pip install sqlalchemy
+Followed tutorial
+https://docs.sqlalchemy.org/en/rel_1_2/orm/tutorial.html#building-a-relationship
+Configured Code to use the virtual enviroment
+https://code.visualstudio.com/docs/python/environments
+ToDo
+* Doc strings
+* Test and see if it runs
+* Create default categories
+
+2019-01JAN-08
+https://stackoverflow.com/questions/7478403/sqlalchemy-classes-across-files
+Explained how to use a single instance of declarative_base()
+
+2019-01JAN-19
+Switched to desktop
+/c/Python27/Scripts/virtualenv.exe env
+source ./env/Scripts/activate
+pip install -r ./sqlalchemy/requirements.txt
+
+2020-01JAN-21
+Using https://sqlitestudio.pl/index.rvt works well since it allows adding a row and populating it with data before comitting it to the database. DB Browser for SQLite insists on creating the database record before it can be populated. This leads to issues with the constraints on the variaous fields.
