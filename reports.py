@@ -46,11 +46,20 @@ def generate_CoachImport(session):
     with open("outputs/CoachImport.csv", "wb") as csvfile:
         csvwriter = csv.writer(csvfile)
 
-        coaches = session.query(Category).filter_by(
-            CategoryDescription='Coach').one().people
+        coaches = (
+            session.query(Category).filter_by(CategoryDescription="Coach").one().people
+        )
         for coach in coaches:
-            row = [coach.SchoolID, coach.FirstName, coach.LastName,
-                   coach.Email, "", "", "", "www"]
+            row = [
+                coach.SchoolID,
+                coach.FirstName,
+                coach.LastName,
+                coach.Email,
+                "",
+                "",
+                "",
+                "www",
+            ]
             logging.debug(row)
             csvwriter.writerow(row)
 
@@ -60,7 +69,7 @@ def generate_room_schedules(session):
     Generate HTML schedules of Decatheletes per speech room
     @param session Session object
     """
-    for room in session.query(Room).filter_by(RoomKind='S').order_by(Room.RoomID):
+    for room in session.query(Room).filter_by(RoomKind="S").order_by(Room.RoomID):
         markup = HTML()
         head = markup.head
         head.style(TABLE_STYLE_STRING)
@@ -79,14 +88,17 @@ def generate_room_schedules(session):
         table_row.th("Name")
 
         # for speech in sorted(room.speeches, Person.time_sort()):
-        for student in session.query(Person).filter_by(SpeechRoomID=room.RoomID).order_by(Person.SpeechTime):
+        for student in (
+            session.query(Person)
+            .filter_by(SpeechRoomID=room.RoomID)
+            .order_by(Person.SpeechTime)
+        ):
             table_row = table.tr
-            table_row.td(student.SpeechTimeFormatted(),
-                         style=TIME_STYLE_STRING)
+            table_row.td(student.SpeechTimeFormatted(), style=TIME_STYLE_STRING)
             table_row.td(str(student.StudentID), style=STUDENT_ID_STYLE_STRING)
             table_row.td(student.FullName())
 
-        with open("outputs/"+room.description()+".html", "wb") as rosterfile:
+        with open("outputs/" + room.description() + ".html", "wb") as rosterfile:
             rosterfile.write(str(markup))
 
 
@@ -118,8 +130,7 @@ def generate_rosters(session):
         school_name_row.td(school.SchoolName)
 
         # List out the coach(es)
-        people = session.query(Person).filter_by(
-            SchoolID=school.SchoolID).all()
+        people = session.query(Person).filter_by(SchoolID=school.SchoolID).all()
         for person in people:
             if person.Category.CategoryDescription != "Coach":
                 continue
@@ -148,32 +159,39 @@ def generate_rosters(session):
         table_row.th("PM Test Time", klass="students")
 
         student_count = 0
-        students = session.query(Person).filter_by(
-            SchoolID=school.SchoolID).order_by(Person.StudentID).all()
+        students = (
+            session.query(Person)
+            .filter_by(SchoolID=school.SchoolID)
+            .order_by(Person.StudentID)
+            .all()
+        )
         for student in students:
             # All participating students will have a valid StudentID
             if student.StudentID is None:
                 continue
             student_count += 1
             table_row = table.tr(klass="students")
-            table_row.td(str(student.StudentID), klass="students",
-                         style=STUDENT_ID_STYLE_STRING)
+            table_row.td(
+                str(student.StudentID), klass="students", style=STUDENT_ID_STYLE_STRING
+            )
             table_row.td(student.FullName(), klass="students")
-            table_row.td(student.Category.CategoryDescription,
-                         klass="students")
+            table_row.td(student.Category.CategoryDescription, klass="students")
             table_row.td(student.SpeechRoomFormatted(), klass="students")
-            table_row.td(student.SpeechTimeFormatted(),
-                         klass="students", style=TIME_STYLE_STRING)
+            table_row.td(
+                student.SpeechTimeFormatted(), klass="students", style=TIME_STYLE_STRING
+            )
             table_row.td(student.TestingRoomFormatted(), klass="students")
-            table_row.td(student.TestingTimeFormatted(),
-                         klass="students", style=TIME_STYLE_STRING)
-            table_row.td("1:40 PM",
-                         klass="students", style=TIME_STYLE_STRING)
+            table_row.td(
+                student.TestingTimeFormatted(),
+                klass="students",
+                style=TIME_STYLE_STRING,
+            )
+            table_row.td("1:40 PM", klass="students", style=TIME_STYLE_STRING)
 
         count_row.td(str(student_count))
 
         if student_count > 0:
-            with open("outputs/"+school.SchoolName+".html", "wb") as rosterfile:
+            with open("outputs/" + school.SchoolName + ".html", "wb") as rosterfile:
                 rosterfile.write(str(markup))
         # print school.people
 
@@ -196,24 +214,25 @@ def generate_StudentRooms(session):
             if not student.is_student():
                 continue
 
-            row = [student.StudentID,
-                   student.SchoolID,
-                   student.FirstName,
-                   student.LastName,
-                   student.SpeechRoomFormatted(),  # Speech Room
-                   student.SpeechTimeFormatted(),  # Speech Time
-                   student.SpeechRoomFormatted(),  # Interview Room
-                   student.SpeechTimeFormatted(),  # Interview Time
-                   student.TestingRoomFormatted(),  # Testing Room
-                   "1",  # Testing Seat
-                   "EssayRoomA",  # Essay Room
-                   student.CategoryID,
-                   "9",  # Grade
-                   "False",  # Transcript
-                   "False",  # Permission
-                   "False",  # CodeofConduct
-                   "False"  # ActivityForm
-                   ]
+            row = [
+                student.StudentID,
+                student.SchoolID,
+                student.FirstName,
+                student.LastName,
+                student.SpeechRoomFormatted(),  # Speech Room
+                student.SpeechTimeFormatted(),  # Speech Time
+                student.SpeechRoomFormatted(),  # Interview Room
+                student.SpeechTimeFormatted(),  # Interview Time
+                student.TestingRoomFormatted(),  # Testing Room
+                "1",  # Testing Seat
+                "EssayRoomA",  # Essay Room
+                student.CategoryID,
+                "9",  # Grade
+                "False",  # Transcript
+                "False",  # Permission
+                "False",  # CodeofConduct
+                "False",  # ActivityForm
+            ]
             csvwriter.writerow(row)
 
 
@@ -229,12 +248,18 @@ def generate_TeamImportData(session):
         csvwriter = csv.writer(csvfile)
 
         for school in session.query(School).order_by(School.SchoolID):
-            row = [school.SchoolID, school.SchoolName, school.Address1,
-                   school.Address2, school.City, school.State, school.ZipCode,
-                   "MEDIUM",  # Division
-                   "MEDIUM",  # Category
-                   "Kansas"   # Region
-                   ]
+            row = [
+                school.SchoolID,
+                school.SchoolName,
+                school.Address1,
+                school.Address2,
+                school.City,
+                school.State,
+                school.ZipCode,
+                "MEDIUM",  # Division
+                "MEDIUM",  # Category
+                "Kansas",  # Region
+            ]
             logging.debug(row)
             csvwriter.writerow(row)
 
@@ -268,7 +293,7 @@ def generate_totals(session):
         for person in school.people:
             if person.is_student():
                 school_totals[school.SchoolName] += 1
-            elif person.Category.CategoryDescription == 'Volunteer':
+            elif person.Category.CategoryDescription == "Volunteer":
                 volunteers += 1
 
             lunch_counts[person.LunchID] += 1
@@ -276,24 +301,24 @@ def generate_totals(session):
         decathelets = decathelets + school_totals[school.SchoolName]
 
         if school_totals[school.SchoolName]:
-            print '{0}: {1}'.format(
-                school.SchoolName, school_totals[school.SchoolName])
+            print "{0}: {1}".format(school.SchoolName, school_totals[school.SchoolName])
         else:
             # Schools without decathletes should be removed from the room split calculation below
             del school_totals[school.SchoolName]
 
     best_combination = find_room_split(school_totals)
 
-    print 'First Testing Session'
+    print "First Testing Session"
     for entry in best_combination:
-        print '* {0}'.format(entry)
-    print 'Decathletes {0}'.format(decathelets)
-    print 'Volunteers {0}'.format(volunteers)
-    print 'Lunches'
+        print "* {0}".format(entry)
+    print "Decathletes {0}".format(decathelets)
+    print "Volunteers {0}".format(volunteers)
+    print "Lunches"
     lunch_total = 0
     for lunch_choice in lunch_choices:
         print "{0:8} {1}".format(
-            lunch_choice.LunchDescription, lunch_counts[lunch_choice.LunchID])
+            lunch_choice.LunchDescription, lunch_counts[lunch_choice.LunchID]
+        )
         lunch_total += lunch_counts[lunch_choice.LunchID]
     print "{0:8} {1}".format("Total", lunch_total)
 
@@ -322,8 +347,9 @@ def generate_volunteer_list(session):
     table_row.th("Morning Assignment", klass="students")
     table_row.th("Afternoon Assignment", klass="students")
 
-    volunteers = session.query(Category).filter_by(
-        CategoryDescription='Volunteer').one().people
+    volunteers = (
+        session.query(Category).filter_by(CategoryDescription="Volunteer").one().people
+    )
 
     for volunteer in volunteers:
         table_row = table.tr(klass="students")
@@ -342,8 +368,7 @@ def generate_volunteer_list(session):
         # Leave a blank for manually filling in assigment
         table_row.td(" ", klass="students")
         if volunteer.VolunteerTime == "Morning":
-            table_row.td(klass="students").hr(
-                style="border-top: 2px dotted black;")
+            table_row.td(klass="students").hr(style="border-top: 2px dotted black;")
         else:
             # Leave a blank for manually filling in assigment
             table_row.td(" ", klass="students")
@@ -360,7 +385,7 @@ def powerset(iterable):
     """
     "powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"
     s = list(iterable)
-    return chain.from_iterable(combinations(s, r) for r in range(len(s)+1))
+    return chain.from_iterable(combinations(s, r) for r in range(len(s) + 1))
 
 
 def find_room_split(counts):

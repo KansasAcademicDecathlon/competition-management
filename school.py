@@ -6,7 +6,7 @@ from base import Base
 
 
 class School(Base):
-    __tablename__ = 'School'
+    __tablename__ = "School"
 
     SchoolID = Column(Integer, primary_key=True)
     SchoolName = Column(String, nullable=False)
@@ -20,4 +20,7 @@ class School(Base):
 
     def __repr__(self):
         return "<User(first='%s', last='%s', email='%s')>" % (
-            self.first_name, self.last_name, self.email)
+            self.first_name,
+            self.last_name,
+            self.email,
+        )

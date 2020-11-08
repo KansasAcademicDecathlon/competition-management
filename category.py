@@ -5,12 +5,11 @@ from base import Base
 
 
 class Category(Base):
-    __tablename__ = 'Category'
+    __tablename__ = "Category"
 
     CategoryID = Column(Integer, primary_key=True)
     CategoryDescription = Column(String, nullable=False)
     people = relationship("Person")
 
     def __repr__(self):
-        return "<Category(description='%s')>" % (
-            self.CategoryDescription)
+        return "<Category(description='%s')>" % (self.CategoryDescription)

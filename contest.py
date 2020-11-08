@@ -109,7 +109,8 @@ class Contest(object):
 
         for coach in self.conn.execute(query_string, (school_id,)):
             coach_dict[coach["PersonID"]] = " ".join(
-                [coach["FirstName"], coach["LastName"]])
+                [coach["FirstName"], coach["LastName"]]
+            )
 
         return coach_dict
 
@@ -146,11 +147,11 @@ class Contest(object):
             csvwriter = csv.writer(csvfile)
 
             for coach in self.conn.execute(query_string):
-                row = [coach['SchoolID']]
-                row.append(coach['FirstName'])
-                row.append(coach['LastName'])
+                row = [coach["SchoolID"]]
+                row.append(coach["FirstName"])
+                row.append(coach["LastName"])
                 for _ in range(5):
-                    row.append('')
+                    row.append("")
                 logging.debug(row)
                 csvwriter.writerow(row)
 
@@ -160,11 +161,18 @@ class Contest(object):
         Number,School Name,Address1,Address2,City,State,Zip Code,Division,\
             Category,Region
         """
-        fieldnames = ['SchoolID', 'SchoolName',
-                      'Address1', 'Address2',
-                      'City', 'State', 'ZipCode',
-                      'Division', 'Category',
-                      'Region']
+        fieldnames = [
+            "SchoolID",
+            "SchoolName",
+            "Address1",
+            "Address2",
+            "City",
+            "State",
+            "ZipCode",
+            "Division",
+            "Category",
+            "Region",
+        ]
 
         with open("TeamImportData.csv", "wb") as csvfile:
             csvwriter = csv.writer(csvfile)
@@ -188,9 +196,8 @@ class Contest(object):
         """
         Generate the Roster Report in CSV format
         """
-        fieldnames = ['PersonID', 'FirstName',
-                      'LastName', 'CategoryDescription']
-        header_names = ['Student #', 'First Name', 'Last Name', 'Category']
+        fieldnames = ["PersonID", "FirstName", "LastName", "CategoryDescription"]
+        header_names = ["Student #", "First Name", "Last Name", "Category"]
 
         for schoolID, schoolName in self.schools().items():
             logging.debug("Processing School %s", schoolName)
@@ -206,12 +213,11 @@ class Contest(object):
             with open(schoolName + ".csv", "wb") as csvfile:
                 csvwriter = csv.writer(csvfile)
                 # Write the team number
-                csvwriter.writerow(['Team Number', schoolID])
-                csvwriter.writerow(['School', schoolName])
+                csvwriter.writerow(["Team Number", schoolID])
+                csvwriter.writerow(["School", schoolName])
 
-                for coach_name \
-                        in self.coaches_by_school(schoolID).itervalues():
-                    csvwriter.writerow(['Coach', coach_name])
+                for coach_name in self.coaches_by_school(schoolID).itervalues():
+                    csvwriter.writerow(["Coach", coach_name])
 
                 # Do not use writeheader as it does not match the dictionary
                 # names

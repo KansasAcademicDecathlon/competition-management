@@ -3,8 +3,9 @@ from sqlalchemy.orm import relationship
 
 from base import Base
 
+
 class Lunch(Base):
-    __tablename__ = 'Lunch'
+    __tablename__ = "Lunch"
 
     LunchID = Column(Integer, primary_key=True)
     LunchDescription = Column(String, nullable=False)
@@ -18,5 +19,4 @@ class Lunch(Base):
         return session.query(Lunch).order_by(Lunch.LunchID).all()
 
     def __repr__(self):
-        return "<Lunch(description='%s')>" % (
-            self.LunchDescription)
+        return "<Lunch(description='%s')>" % (self.LunchDescription)
