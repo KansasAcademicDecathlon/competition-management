@@ -4,7 +4,7 @@ Upgraded pip
 Installed virtualenv
 /c/Python27/python -m pip install virtualenv
 Created virtual enviroment
-/c/Python27/Scripts/virtualenv.exe env 
+/c/Python27/Scripts/virtualenv.exe env
 Installed SQLAlchemy
 python -m pip install sqlalchemy
 Followed tutorial
