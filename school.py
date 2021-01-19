@@ -19,8 +19,7 @@ class School(Base):
     people = relationship("Person")
 
     def __repr__(self):
-        return "<User(first='%s', last='%s', email='%s')>" % (
-            self.first_name,
-            self.last_name,
-            self.email,
+        return "<School(ID='%s', Name='%s')>" % (
+            self.SchoolID,
+            self.SchoolName,
         )
