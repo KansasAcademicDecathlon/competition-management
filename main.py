@@ -5,6 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from base import Base
+import online_testing as Online
 import reports as Reports
 
 
@@ -38,6 +39,7 @@ def main():
     distutils.dir_util.mkpath("outputs")
 
     if not args.test:
+        Online.generate_SchoolInformationFile(session)
         Reports.generate_TeamImportData(session)
         Reports.generate_CoachImport(session)
         Reports.generate_rosters(session)

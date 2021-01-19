@@ -1,0 +1,42 @@
+import csv
+from html import HTML
+import logging
+
+from itertools import chain, combinations
+
+from category import Category
+from person import Person
+from room import Room
+from school import School
+
+
+def generate_SchoolInformationFile(session):
+    """
+    Generate a CSV School Information File for import into the USAD online testing system
+    domain,school's name,school's contact - first name,school's contact - last name,school's city,state director's USAD state code for the school
+    @param session Session object
+    """
+    with open("outputs/SchoolInformationFile.csv", "wb") as csvfile:
+        csvwriter = csv.writer(csvfile)
+
+        for school in session.query(School).order_by(School.SchoolID):
+            # Use the join to be able to filter by CategoryDescription
+            # Assume the first coach is the contact
+            coach = (
+                session.query(Person)
+                .join(Person.Category)
+                .filter(Person.SchoolID == school.SchoolID)
+                .filter(Category.CategoryDescription == "Coach")
+                .first()
+            )
+            row = [
+                # Must include the @ sign
+                "@" + school.Domain,
+                school.SchoolName,
+                coach.FirstName,
+                coach.LastName,
+                school.City,
+                school.State,
+            ]
+            logging.debug(row)
+            csvwriter.writerow(row)
