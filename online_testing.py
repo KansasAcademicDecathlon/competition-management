@@ -40,3 +40,28 @@ def generate_SchoolInformationFile(session):
             ]
             logging.debug(row)
             csvwriter.writerow(row)
+
+
+def generate_StudentTeamInformationFile(session):
+    """
+    Generate a CSV Student Team Information File for import into the USAD online testing system
+    student ID,domain,First Name,Last Name,Division (HSV)
+    @param session Session object
+    """
+    with open("outputs/StudentTeamInformationFile.csv", "wb") as csvfile:
+        csvwriter = csv.writer(csvfile)
+
+        for student in (
+            session.query(Person)
+            .join(Person.Category)
+            .filter(Category.get_student_filter())
+        ):
+            row = [
+                student.StudentID,
+                "@" + student.School.Domain,
+                student.FirstName,
+                student.LastName,
+                student.Category.CategoryDescription[0],
+            ]
+            logging.debug(row)
+            csvwriter.writerow(row)

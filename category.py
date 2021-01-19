@@ -1,3 +1,4 @@
+import sqlalchemy
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -13,3 +14,11 @@ class Category(Base):
 
     def __repr__(self):
         return "<Category(description='%s')>" % (self.CategoryDescription)
+
+    @staticmethod
+    def get_student_filter():
+        return sqlalchemy.sql.expression.or_(
+            Category.CategoryDescription == "HONORS",
+            Category.CategoryDescription == "SCHOLASTIC",
+            Category.CategoryDescription == "VARSITY",
+        )

@@ -40,6 +40,7 @@ def main():
 
     if not args.test:
         Online.generate_SchoolInformationFile(session)
+        Online.generate_StudentTeamInformationFile(session)
         Reports.generate_TeamImportData(session)
         Reports.generate_CoachImport(session)
         Reports.generate_rosters(session)
