@@ -1,5 +1,8 @@
 #!/bin/bash
-/c/Python27/python -m virtualenv env
+VENV_DIR="env"
+if [ ! -d "$VENV_DIR" ]; then
+    /c/Python27/python -m virtualenv env
+fi
 # shellcheck disable=SC1091
 source env/Scripts/activate
 python -m pip install --upgrade pip
