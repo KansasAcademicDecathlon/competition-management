@@ -14,11 +14,11 @@ class Room(Base):
     speeches = relationship("Person", foreign_keys="[Person.SpeechRoomID]")
 
     def __repr__(self):
-        return "<Room(name='%s' number='%s')>" % (self.Name, self.Number)
+        return "<Room(name='{}' number='{}')>".format(self.Name, self.Number)
 
     def description(self):
         """
         Name and Number strings combined
         @return concatenated string
         """
-        return "{0} {1}".format(self.Name, self.Number)
+        return "{} {}".format(self.Name, self.Number)

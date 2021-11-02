@@ -20,7 +20,7 @@ class School(Base):
     people = relationship("Person")
 
     def __repr__(self):
-        return "<School(ID='%s', Name='%s')>" % (
+        return "<School(ID='{}', Name='{}')>".format(
             self.SchoolID,
             self.SchoolName,
         )

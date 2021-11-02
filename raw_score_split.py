@@ -64,8 +64,8 @@ def main():
                 school_list[score.school()].append(score)
 
     for key, value in school_list.iteritems():
-        output_filename = "{0}.csv".format(key)
-        print("Writing {0}".format(output_filename))
+        output_filename = "{}.csv".format(key)
+        print("Writing {}".format(output_filename))
         with open(output_filename, "wb") as csvfile:
             csvwriter = csv.writer(csvfile)
             for score in sorted(value):

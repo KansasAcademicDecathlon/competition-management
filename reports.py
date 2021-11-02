@@ -301,7 +301,7 @@ def generate_totals(session):
         decathelets = decathelets + school_totals[school.SchoolName]
 
         if school_totals[school.SchoolName]:
-            print "{0}: {1}".format(school.SchoolName, school_totals[school.SchoolName])
+            print "{}: {}".format(school.SchoolName, school_totals[school.SchoolName])
         else:
             # Schools without decathletes should be removed from the room split calculation below
             del school_totals[school.SchoolName]
@@ -310,17 +310,17 @@ def generate_totals(session):
 
     print "First Testing Session"
     for entry in best_combination:
-        print "* {0}".format(entry)
-    print "Decathletes {0}".format(decathelets)
-    print "Volunteers {0}".format(volunteers)
+        print "* {}".format(entry)
+    print "Decathletes {}".format(decathelets)
+    print "Volunteers {}".format(volunteers)
     print "Lunches"
     lunch_total = 0
     for lunch_choice in lunch_choices:
-        print "{0:8} {1}".format(
+        print "{:8} {}".format(
             lunch_choice.LunchDescription, lunch_counts[lunch_choice.LunchID]
         )
         lunch_total += lunch_counts[lunch_choice.LunchID]
-    print "{0:8} {1}".format("Total", lunch_total)
+    print "{:8} {}".format("Total", lunch_total)
 
 
 def generate_volunteer_list(session):
