@@ -108,7 +108,7 @@ def generate_rosters(session):
     @param session Session object
     """
     for school in session.query(School).order_by(School.SchoolID):
-        # print school.SchoolName
+        # print(school.SchoolName)
         markup = HTML()
         head = markup.head
         head.style(TABLE_STYLE_STRING)
@@ -193,7 +193,7 @@ def generate_rosters(session):
         if student_count > 0:
             with open("outputs/" + school.SchoolName + ".html", "wb") as rosterfile:
                 rosterfile.write(str(markup))
-        # print school.people
+        # print(school.people)
 
 
 # pylint: disable=invalid-name
@@ -301,26 +301,28 @@ def generate_totals(session):
         decathelets = decathelets + school_totals[school.SchoolName]
 
         if school_totals[school.SchoolName]:
-            print "{}: {}".format(school.SchoolName, school_totals[school.SchoolName])
+            print("{}: {}".format(school.SchoolName, school_totals[school.SchoolName]))
         else:
             # Schools without decathletes should be removed from the room split calculation below
             del school_totals[school.SchoolName]
 
     best_combination = find_room_split(school_totals)
 
-    print "First Testing Session"
+    print("First Testing Session")
     for entry in best_combination:
-        print "* {}".format(entry)
-    print "Decathletes {}".format(decathelets)
-    print "Volunteers {}".format(volunteers)
-    print "Lunches"
+        print("* {}".format(entry))
+    print("Decathletes {}".format(decathelets))
+    print("Volunteers {}".format(volunteers))
+    print("Lunches")
     lunch_total = 0
     for lunch_choice in lunch_choices:
-        print "{:8} {}".format(
-            lunch_choice.LunchDescription, lunch_counts[lunch_choice.LunchID]
+        print(
+            "{:8} {}".format(
+                lunch_choice.LunchDescription, lunch_counts[lunch_choice.LunchID]
+            )
         )
         lunch_total += lunch_counts[lunch_choice.LunchID]
-    print "{:8} {}".format("Total", lunch_total)
+    print("{:8} {}".format("Total", lunch_total))
 
 
 def generate_volunteer_list(session):

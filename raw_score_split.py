@@ -69,7 +69,7 @@ def main():
         with open(output_filename, "wb") as csvfile:
             csvwriter = csv.writer(csvfile)
             for score in sorted(value):
-                # print score.row()
+                # print(score.row())
                 csvwriter.writerow(score.row)
 
 
