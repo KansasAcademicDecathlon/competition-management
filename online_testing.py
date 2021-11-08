@@ -9,6 +9,8 @@ from person import Person
 from room import Room
 from school import School
 
+logger = logging.getLogger(__name__)
+
 
 def generate_SchoolInformationFile(session):
     """
@@ -29,6 +31,11 @@ def generate_SchoolInformationFile(session):
                 .filter(Category.CategoryDescription == "Coach")
                 .first()
             )
+
+            if not coach:
+                logger.error("%s is missing a coach!", school.SchoolName)
+                continue
+
             row = [
                 # Must include the @ sign
                 "@" + school.Domain,
