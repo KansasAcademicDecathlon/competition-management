@@ -5,6 +5,6 @@ if [ ! -d "$VENV_DIR" ]; then
 fi
 # shellcheck disable=SC1091
 source env/Scripts/activate
-python -m pip install --upgrade pip
-pip install -r requirements.txt
+python -m pip install -q --upgrade pip
+pip install -q -r requirements.txt
 python main.py "$@"
