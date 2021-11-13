@@ -43,7 +43,7 @@ def generate_CoachImport(session):
     TeamID,First Name,Last Name,Email,Phone,Extension,Fax,Website
     @param session Session object
     """
-    with open("outputs/CoachImport.csv", "wb") as csvfile:
+    with open("outputs/CoachImport.csv", "w") as csvfile:
         csvwriter = csv.writer(csvfile)
 
         coaches = (
@@ -98,7 +98,7 @@ def generate_room_schedules(session):
             table_row.td(str(student.StudentID), style=STUDENT_ID_STYLE_STRING)
             table_row.td(student.FullName())
 
-        with open("outputs/" + room.description() + ".html", "wb") as rosterfile:
+        with open("outputs/" + room.description() + ".html", "w") as rosterfile:
             rosterfile.write(str(markup))
 
 
@@ -206,7 +206,7 @@ def generate_StudentRooms(session):
         CodeofConduct,ActivityForm
     @param session Session object
     """
-    with open("outputs/StudentRooms.csv", "wb") as csvfile:
+    with open("outputs/StudentRooms.csv", "w") as csvfile:
         csvwriter = csv.writer(csvfile)
 
         students = session.query(Person).order_by(Person.StudentID).all()
@@ -244,7 +244,7 @@ def generate_TeamImportData(session):
         Category,Region
     @param session Session object
     """
-    with open("outputs/TeamImportData.csv", "wb") as csvfile:
+    with open("outputs/TeamImportData.csv", "w") as csvfile:
         csvwriter = csv.writer(csvfile)
 
         for school in session.query(School).order_by(School.SchoolID):

@@ -16,7 +16,7 @@ def generate_SchoolInformationFile(session):
     domain,school's name,school's contact - first name,school's contact - last name,school's city,state director's USAD state code for the school
     @param session Session object
     """
-    with open("outputs/SchoolInformationFile.csv", "wb") as csvfile:
+    with open("outputs/SchoolInformationFile.csv", "w") as csvfile:
         csvwriter = csv.writer(csvfile)
 
         for school in session.query(School).order_by(School.SchoolID):
@@ -48,7 +48,7 @@ def generate_StudentTeamInformationFile(session):
     student ID,domain,First Name,Last Name,Division (HSV)
     @param session Session object
     """
-    with open("outputs/StudentTeamInformationFile.csv", "wb") as csvfile:
+    with open("outputs/StudentTeamInformationFile.csv", "w") as csvfile:
         csvwriter = csv.writer(csvfile)
 
         for student in (
