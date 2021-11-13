@@ -1,10 +1,17 @@
 #!/bin/bash
+set -e
 VENV_DIR="env"
 if [ ! -d "$VENV_DIR" ]; then
-    /c/Python27/python -m virtualenv env
+    python3 -m virtualenv env
 fi
-# shellcheck disable=SC1091
-source env/Scripts/activate
+if [ -d $VENV_DIR/Scripts ]; then
+    # shellcheck disable=SC1090
+    source $VENV_DIR/Scripts/activate
+else
+    # shellcheck disable=SC1090
+    source $VENV_DIR/bin/activate
+fi
+
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 python main.py "$@"
