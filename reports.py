@@ -1,6 +1,6 @@
 import csv
 import htmlBuilder
-from htmlBuilder.tags import B, Body, Head, Html, Title, P, Table, Td, Th, Tr
+from htmlBuilder.tags import B, Body, Head, Hr, Html, Title, P, Table, Td, Th, Tr
 from htmlBuilder.attributes import Class, Style
 import logging
 
@@ -371,54 +371,55 @@ def generate_volunteer_list(session):
     Generate a list of volunteers
     @param session Session object
     """
-    return
-    markup = HTML()
-    head = markup.head
-    head.style(TABLE_STYLE_STRING)
-    head.title("Volunteers")
-    body = markup.body
-
-    body.p.b("Volunteers")
-
-    # Table of volunteers
-    table = body.table(klass="students")
-
-    table_row = table.tr
-    table_row.th("School", klass="students")
-    table_row.th("Name", klass="students")
-    table_row.th("Lunch", klass="students")
-    table_row.th("Time", klass="students")
-    table_row.th("Morning Assignment", klass="students")
-    table_row.th("Afternoon Assignment", klass="students")
-
     volunteers = (
         session.query(Category).filter_by(CategoryDescription="Volunteer").one().people
     )
 
-    for volunteer in volunteers:
-        table_row = table.tr(klass="students")
-        table_row.td(volunteer.School.SchoolName, klass="students")
-        table_row.td(volunteer.FullName(), klass="students")
-        table_row.td(volunteer.Lunch.LunchDescription, klass="students")
-        try:
-            volunteer_time_text = volunteer.VolunteerTime
-        except AttributeError:
-            volunteer_time_text = None
+    html = Html(
+        [],
+        Head(
+            [], htmlBuilder.tags.Style([], TABLE_STYLE_STRING), Title([], "Volunteers")
+        ),
+        Body(
+            [],
+            P([], B([], "Volunteers")),
+            # Table of volunteers
+            Table(
+                [Class("students")],
+                Tr(
+                    [],
+                    Th([Class("students")], "School"),
+                    Th([Class("students")], "Name"),
+                    Th([Class("students")], "Lunch"),
+                    Th([Class("students")], "Time"),
+                    Th([Class("students")], "Morning Assignment"),
+                    Th([Class("students")], "Afternoon Assignment"),
+                ),
+                # List comprehension to create volunteer rows
+                [
+                    Tr(
+                        [Class("students")],
+                        Th([Class("students")], volunteer.School.SchoolName),
+                        Th([Class("students")], volunteer.FullName()),
+                        Th([Class("students")], volunteer.Lunch.LunchDescription),
+                        Th([Class("students")], volunteer.VolunteerTimeFormatted()),
+                        # Leave a blank for manually filling in assignment
+                        Th([Class("students")], " "),
+                        Th(
+                            [Class("students")],
+                            Hr([Style("border-top: 2px dotted black;")])
+                            if volunteer.VolunteerTimeFormatted() == "Morning"
+                            else " ",
+                        ),
+                    )
+                    for volunteer in volunteers
+                ],
+            ),
+        ),
+    )
 
-        if not volunteer_time_text:
-            volunteer_time_text = "????"
-
-        table_row.td(volunteer_time_text, klass="students")
-        # Leave a blank for manually filling in assigment
-        table_row.td(" ", klass="students")
-        if volunteer.VolunteerTime == "Morning":
-            table_row.td(klass="students").hr(style="border-top: 2px dotted black;")
-        else:
-            # Leave a blank for manually filling in assigment
-            table_row.td(" ", klass="students")
-
-    with open("outputs/volunteers.html", "wb") as rosterfile:
-        rosterfile.write(str(markup))
+    with open("outputs/volunteers.html", "w") as rosterfile:
+        rosterfile.write(html.render())
 
 
 def powerset(iterable):

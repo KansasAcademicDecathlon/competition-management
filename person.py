@@ -85,6 +85,16 @@ class Person(Base):
         except AttributeError:
             return "????"
 
+    def VolunteerTimeFormatted(self):
+        """
+        Return the VolunteerTime as a formatted string
+
+        """
+        try:
+            return self.VolunteerTime
+        except AttributeError:
+            return "????"
+
     def is_student(self):
         """
         Is the given person object a student?
