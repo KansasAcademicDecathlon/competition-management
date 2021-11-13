@@ -1,5 +1,4 @@
 import csv
-from html import HTML
 import logging
 
 from itertools import chain, combinations
