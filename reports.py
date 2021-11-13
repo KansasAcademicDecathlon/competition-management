@@ -1,5 +1,7 @@
 import csv
-from html import HTML
+import htmlBuilder
+from htmlBuilder.tags import B, Body, Head, Html, Title, P, Table, Td, Th, Tr
+from htmlBuilder.attributes import Class, Style
 import logging
 
 from itertools import chain, combinations
@@ -70,36 +72,49 @@ def generate_room_schedules(session):
     @param session Session object
     """
     for room in session.query(Room).filter_by(RoomKind="S").order_by(Room.RoomID):
-        markup = HTML()
-        head = markup.head
-        head.style(TABLE_STYLE_STRING)
-        head.title(room.description())
-        body = markup.body
-
-        # Room name
-        body.p.b.b(room.description())
-
-        # Table of students
-        table = body.table
-
-        table_row = table.tr
-        table_row.th("Time")
-        table_row.th("Student #")
-        table_row.th("Name")
-
-        # for speech in sorted(room.speeches, Person.time_sort()):
-        for student in (
+        students = (
             session.query(Person)
             .filter_by(SpeechRoomID=room.RoomID)
             .order_by(Person.SpeechTime)
-        ):
-            table_row = table.tr
-            table_row.td(student.SpeechTimeFormatted(), style=TIME_STYLE_STRING)
-            table_row.td(str(student.StudentID), style=STUDENT_ID_STYLE_STRING)
-            table_row.td(student.FullName())
+        )
+
+        html = Html(
+            [],
+            Head(
+                [],
+                htmlBuilder.tags.Style([], TABLE_STYLE_STRING),
+                Title([], room.description()),
+            ),
+            Body(
+                [],
+                # Room name
+                P([], B([], B([], room.description()))),
+                Table(
+                    [],
+                    # Headers
+                    Tr([], Th([], "Time"), Th([], "Student #"), Th([], "Name")),
+                    # List comprehension to create student rows
+                    [
+                        Tr(
+                            [],
+                            Td(
+                                [Style(TIME_STYLE_STRING)],
+                                student.SpeechTimeFormatted(),
+                            ),
+                            Td(
+                                [Style(STUDENT_ID_STYLE_STRING)],
+                                str(student.StudentID),
+                            ),
+                            Td([], student.FullName()),
+                        )
+                        for student in students
+                    ],
+                ),
+            ),
+        )
 
         with open("outputs/" + room.description() + ".html", "w") as rosterfile:
-            rosterfile.write(str(markup))
+            rosterfile.write(html.render())
 
 
 def generate_rosters(session):
@@ -107,6 +122,7 @@ def generate_rosters(session):
     Generate HTML rosters per school
     @param session Session object
     """
+    return
     for school in session.query(School).order_by(School.SchoolID):
         # print(school.SchoolName)
         markup = HTML()
@@ -330,6 +346,7 @@ def generate_volunteer_list(session):
     Generate a list of volunteers
     @param session Session object
     """
+    return
     markup = HTML()
     head = markup.head
     head.style(TABLE_STYLE_STRING)
