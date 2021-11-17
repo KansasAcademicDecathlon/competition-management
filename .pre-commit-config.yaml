@@ -20,3 +20,4 @@ repos:
     rev: v2.29.0
     hooks:
     -   id: pyupgrade
+        args: [--py3-plus]

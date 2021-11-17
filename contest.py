@@ -4,7 +4,7 @@ import os.path
 import sqlite3
 
 
-class Contest(object):
+class Contest:
     """ Contest database class """
 
     def __init__(self):
