@@ -31,14 +31,14 @@ class Person(Base):
     VolunteerTime = Column(String)
 
     def __repr__(self):
-        return "<Person(first='%s', last='%s', email='%s')>" % (
+        return "<Person(first='{}', last='{}', email='{}')>".format(
             self.FirstName,
             self.LastName,
             self.Email,
         )
 
     def FullName(self):
-        return "{0} {1}".format(self.FirstName, self.LastName)
+        return "{} {}".format(self.FirstName, self.LastName)
 
     def TestingRoomFormatted(self):
         """
@@ -82,6 +82,16 @@ class Person(Base):
         """
         try:
             return Person.TimeFormatted(self.SpeechTime)
+        except AttributeError:
+            return "????"
+
+    def VolunteerTimeFormatted(self):
+        """
+        Return the VolunteerTime as a formatted string
+
+        """
+        try:
+            return self.VolunteerTime
         except AttributeError:
             return "????"
 

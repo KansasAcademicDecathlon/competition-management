@@ -27,7 +27,7 @@ def main():
     if args.test:
         engine = create_engine("sqlite:///:memory:", echo=True)
     else:
-        engine = create_engine("sqlite:///{0}".format(args.database), echo=False)
+        engine = create_engine("sqlite:///{}".format(args.database), echo=False)
 
     Base.metadata.create_all(engine)
 

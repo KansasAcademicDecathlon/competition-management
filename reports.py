@@ -1,5 +1,7 @@
 import csv
-from html import HTML
+import htmlBuilder
+from htmlBuilder.tags import B, Body, Head, Hr, Html, Title, P, Table, Td, Th, Tr
+from htmlBuilder.attributes import Class, Style
 import logging
 
 from itertools import chain, combinations
@@ -43,7 +45,7 @@ def generate_CoachImport(session):
     TeamID,First Name,Last Name,Email,Phone,Extension,Fax,Website
     @param session Session object
     """
-    with open("outputs/CoachImport.csv", "wb") as csvfile:
+    with open("outputs/CoachImport.csv", "w") as csvfile:
         csvwriter = csv.writer(csvfile)
 
         coaches = (
@@ -70,36 +72,49 @@ def generate_room_schedules(session):
     @param session Session object
     """
     for room in session.query(Room).filter_by(RoomKind="S").order_by(Room.RoomID):
-        markup = HTML()
-        head = markup.head
-        head.style(TABLE_STYLE_STRING)
-        head.title(room.description())
-        body = markup.body
-
-        # Room name
-        body.p.b.b(room.description())
-
-        # Table of students
-        table = body.table
-
-        table_row = table.tr
-        table_row.th("Time")
-        table_row.th("Student #")
-        table_row.th("Name")
-
-        # for speech in sorted(room.speeches, Person.time_sort()):
-        for student in (
+        students = (
             session.query(Person)
             .filter_by(SpeechRoomID=room.RoomID)
             .order_by(Person.SpeechTime)
-        ):
-            table_row = table.tr
-            table_row.td(student.SpeechTimeFormatted(), style=TIME_STYLE_STRING)
-            table_row.td(str(student.StudentID), style=STUDENT_ID_STYLE_STRING)
-            table_row.td(student.FullName())
+        )
 
-        with open("outputs/" + room.description() + ".html", "wb") as rosterfile:
-            rosterfile.write(str(markup))
+        html = Html(
+            [],
+            Head(
+                [],
+                htmlBuilder.tags.Style([], TABLE_STYLE_STRING),
+                Title([], room.description()),
+            ),
+            Body(
+                [],
+                # Room name
+                P([], B([], B([], room.description()))),
+                Table(
+                    [],
+                    # Headers
+                    Tr([], Th([], "Time"), Th([], "Student #"), Th([], "Name")),
+                    # List comprehension to create student rows
+                    [
+                        Tr(
+                            [],
+                            Td(
+                                [Style(TIME_STYLE_STRING)],
+                                student.SpeechTimeFormatted(),
+                            ),
+                            Td(
+                                [Style(STUDENT_ID_STYLE_STRING)],
+                                str(student.StudentID),
+                            ),
+                            Td([], student.FullName()),
+                        )
+                        for student in students
+                    ],
+                ),
+            ),
+        )
+
+        with open("outputs/" + room.description() + ".html", "w") as rosterfile:
+            rosterfile.write(html.render())
 
 
 def generate_rosters(session):
@@ -107,93 +122,119 @@ def generate_rosters(session):
     Generate HTML rosters per school
     @param session Session object
     """
-    for school in session.query(School).order_by(School.SchoolID):
-        # print school.SchoolName
-        markup = HTML()
-        head = markup.head
-        head.style(TABLE_STYLE_STRING)
-        head.title(school.SchoolName + " Roster")
-        body = markup.body
 
+    for school in session.query(School).order_by(School.SchoolID):
+        # print(school.SchoolName)
         HEADER_STYLE_STRING = "text-align:left;"
 
-        roster_header = body.table(style="margin-left:auto; margin-right:0")
-        # See https://stackoverflow.com/questions/6368061/most-common-way-of-writing-a-html-table-with-vertical-headers
-        # Team Number
-        team_number_row = roster_header.tr
-        team_number_row.th("Team Number", style=HEADER_STYLE_STRING)
-        team_number_row.td("{:02d}".format(school.SchoolID))
+        coaches = (
+            session.query(Person)
+            .join(Person.Category)
+            .filter(Person.SchoolID == school.SchoolID)
+            .filter(Category.CategoryDescription == "Coach")
+        )
 
-        # School name
-        school_name_row = roster_header.tr
-        school_name_row.th("School", style=HEADER_STYLE_STRING)
-        school_name_row.td(school.SchoolName)
-
-        # List out the coach(es)
-        people = session.query(Person).filter_by(SchoolID=school.SchoolID).all()
-        for person in people:
-            if person.Category.CategoryDescription != "Coach":
-                continue
-            coach_row = roster_header.tr
-            coach_row.th("Coach", style=HEADER_STYLE_STRING)
-            coach_row.td(person.FullName())
-
-        # Count of students
-        count_row = roster_header.tr
-        count_row.th("Count", style=HEADER_STYLE_STRING)
-
-        # Insert spacing paragraph
-        body.p()
-
-        # Table of students
-        table = body.table(klass="students")
-
-        table_row = table.tr(klass="students")
-        table_row.th("ID", klass="students")
-        table_row.th("Name", klass="students")
-        table_row.th("Category", klass="students")
-        table_row.th("Speech Room", klass="students")
-        table_row.th("Speech Time", klass="students")
-        table_row.th("Test Room", klass="students")
-        table_row.th("AM Test Time", klass="students")
-        table_row.th("PM Test Time", klass="students")
-
-        student_count = 0
         students = (
             session.query(Person)
             .filter_by(SchoolID=school.SchoolID)
+            .filter(Person.SchoolID.isnot(None))
             .order_by(Person.StudentID)
             .all()
         )
-        for student in students:
-            # All participating students will have a valid StudentID
-            if student.StudentID is None:
-                continue
-            student_count += 1
-            table_row = table.tr(klass="students")
-            table_row.td(
-                str(student.StudentID), klass="students", style=STUDENT_ID_STYLE_STRING
-            )
-            table_row.td(student.FullName(), klass="students")
-            table_row.td(student.Category.CategoryDescription, klass="students")
-            table_row.td(student.SpeechRoomFormatted(), klass="students")
-            table_row.td(
-                student.SpeechTimeFormatted(), klass="students", style=TIME_STYLE_STRING
-            )
-            table_row.td(student.TestingRoomFormatted(), klass="students")
-            table_row.td(
-                student.TestingTimeFormatted(),
-                klass="students",
-                style=TIME_STYLE_STRING,
-            )
-            table_row.td("1:40 PM", klass="students", style=TIME_STYLE_STRING)
 
-        count_row.td(str(student_count))
+        html = Html(
+            [],
+            Head(
+                [],
+                htmlBuilder.tags.Style([], TABLE_STYLE_STRING),
+                Title([], school.SchoolName + " Roster"),
+            ),
+            Body(
+                [],
+                # See https://stackoverflow.com/questions/6368061/most-common-way-of-writing-a-html-table-with-vertical-headers
+                Table(
+                    [Style("margin-left:auto; margin-right:0")],
+                    # Team Number
+                    Tr(
+                        [],
+                        Th([Style(HEADER_STYLE_STRING)], "Team Number"),
+                        Td([], "{:02d}".format(school.SchoolID)),
+                    ),
+                    # School name
+                    Tr(
+                        [],
+                        Th([Style(HEADER_STYLE_STRING)], "School"),
+                        Td([], school.SchoolName),
+                    ),
+                    # List out the coach(es)
+                    [
+                        Tr(
+                            [],
+                            Th([Style(HEADER_STYLE_STRING)], "Coach"),
+                            Td([], coach.FullName()),
+                        )
+                        for coach in coaches
+                    ],
+                    # Count of students
+                    Tr(
+                        [],
+                        Th([Style(HEADER_STYLE_STRING)], "Count"),
+                        Td([], str(len(students))),
+                    ),
+                ),
+                # Insert spacing paragraph
+                P([]),
+                # Table of students
+                Table(
+                    [Class("students")],
+                    Tr(
+                        [Class("students")],
+                        Th([Class("students")], "ID"),
+                        Th([Class("students")], "Name"),
+                        Th([Class("students")], "Category"),
+                        Th([Class("students")], "Speech Room"),
+                        Th([Class("students")], "Speech Time"),
+                        Th([Class("students")], "Test Room"),
+                        Th([Class("students")], "AM Test Time"),
+                        Th([Class("students")], "PM Test Time"),
+                    ),
+                    # List comprehension to create student rows
+                    [
+                        Tr(
+                            [Class("students")],
+                            Td(
+                                [Class("students"), Style(STUDENT_ID_STYLE_STRING)],
+                                str(student.StudentID),
+                            ),
+                            Td([Class("students")], student.FullName()),
+                            Td(
+                                [Class("students")],
+                                student.Category.CategoryDescription,
+                            ),
+                            Td([Class("students")], student.SpeechRoomFormatted()),
+                            Td(
+                                [Class("students"), Style(TIME_STYLE_STRING)],
+                                student.SpeechTimeFormatted(),
+                            ),
+                            Td([Class("students")], student.TestingRoomFormatted()),
+                            Td(
+                                [Class("students"), Style(TIME_STYLE_STRING)],
+                                student.TestingTimeFormatted(),
+                            ),
+                            Td(
+                                [Class("students"), Style(TIME_STYLE_STRING)], "1:40 PM"
+                            ),
+                        )
+                        for student in students
+                    ],
+                ),
+            ),
+        )
 
-        if student_count > 0:
-            with open("outputs/" + school.SchoolName + ".html", "wb") as rosterfile:
-                rosterfile.write(str(markup))
-        # print school.people
+        if len(students):
+            with open("outputs/" + school.SchoolName + ".html", "w") as rosterfile:
+                rosterfile.write(html.render())
+        # print(school.people)
 
 
 # pylint: disable=invalid-name
@@ -206,7 +247,7 @@ def generate_StudentRooms(session):
         CodeofConduct,ActivityForm
     @param session Session object
     """
-    with open("outputs/StudentRooms.csv", "wb") as csvfile:
+    with open("outputs/StudentRooms.csv", "w") as csvfile:
         csvwriter = csv.writer(csvfile)
 
         students = session.query(Person).order_by(Person.StudentID).all()
@@ -244,7 +285,7 @@ def generate_TeamImportData(session):
         Category,Region
     @param session Session object
     """
-    with open("outputs/TeamImportData.csv", "wb") as csvfile:
+    with open("outputs/TeamImportData.csv", "w") as csvfile:
         csvwriter = csv.writer(csvfile)
 
         for school in session.query(School).order_by(School.SchoolID):
@@ -301,26 +342,28 @@ def generate_totals(session):
         decathelets = decathelets + school_totals[school.SchoolName]
 
         if school_totals[school.SchoolName]:
-            print "{0}: {1}".format(school.SchoolName, school_totals[school.SchoolName])
+            print("{}: {}".format(school.SchoolName, school_totals[school.SchoolName]))
         else:
             # Schools without decathletes should be removed from the room split calculation below
             del school_totals[school.SchoolName]
 
     best_combination = find_room_split(school_totals)
 
-    print "First Testing Session"
+    print("First Testing Session")
     for entry in best_combination:
-        print "* {0}".format(entry)
-    print "Decathletes {0}".format(decathelets)
-    print "Volunteers {0}".format(volunteers)
-    print "Lunches"
+        print("* {}".format(entry))
+    print("Decathletes {}".format(decathelets))
+    print("Volunteers {}".format(volunteers))
+    print("Lunches")
     lunch_total = 0
     for lunch_choice in lunch_choices:
-        print "{0:8} {1}".format(
-            lunch_choice.LunchDescription, lunch_counts[lunch_choice.LunchID]
+        print(
+            "{:8} {}".format(
+                lunch_choice.LunchDescription, lunch_counts[lunch_choice.LunchID]
+            )
         )
         lunch_total += lunch_counts[lunch_choice.LunchID]
-    print "{0:8} {1}".format("Total", lunch_total)
+    print("{:8} {}".format("Total", lunch_total))
 
 
 def generate_volunteer_list(session):
@@ -328,53 +371,55 @@ def generate_volunteer_list(session):
     Generate a list of volunteers
     @param session Session object
     """
-    markup = HTML()
-    head = markup.head
-    head.style(TABLE_STYLE_STRING)
-    head.title("Volunteers")
-    body = markup.body
-
-    body.p.b("Volunteers")
-
-    # Table of volunteers
-    table = body.table(klass="students")
-
-    table_row = table.tr
-    table_row.th("School", klass="students")
-    table_row.th("Name", klass="students")
-    table_row.th("Lunch", klass="students")
-    table_row.th("Time", klass="students")
-    table_row.th("Morning Assignment", klass="students")
-    table_row.th("Afternoon Assignment", klass="students")
-
     volunteers = (
         session.query(Category).filter_by(CategoryDescription="Volunteer").one().people
     )
 
-    for volunteer in volunteers:
-        table_row = table.tr(klass="students")
-        table_row.td(volunteer.School.SchoolName, klass="students")
-        table_row.td(volunteer.FullName(), klass="students")
-        table_row.td(volunteer.Lunch.LunchDescription, klass="students")
-        try:
-            volunteer_time_text = volunteer.VolunteerTime
-        except AttributeError:
-            volunteer_time_text = None
+    html = Html(
+        [],
+        Head(
+            [], htmlBuilder.tags.Style([], TABLE_STYLE_STRING), Title([], "Volunteers")
+        ),
+        Body(
+            [],
+            P([], B([], "Volunteers")),
+            # Table of volunteers
+            Table(
+                [Class("students")],
+                Tr(
+                    [],
+                    Th([Class("students")], "School"),
+                    Th([Class("students")], "Name"),
+                    Th([Class("students")], "Lunch"),
+                    Th([Class("students")], "Time"),
+                    Th([Class("students")], "Morning Assignment"),
+                    Th([Class("students")], "Afternoon Assignment"),
+                ),
+                # List comprehension to create volunteer rows
+                [
+                    Tr(
+                        [Class("students")],
+                        Th([Class("students")], volunteer.School.SchoolName),
+                        Th([Class("students")], volunteer.FullName()),
+                        Th([Class("students")], volunteer.Lunch.LunchDescription),
+                        Th([Class("students")], volunteer.VolunteerTimeFormatted()),
+                        # Leave a blank for manually filling in assignment
+                        Th([Class("students")], " "),
+                        Th(
+                            [Class("students")],
+                            Hr([Style("border-top: 2px dotted black;")])
+                            if volunteer.VolunteerTimeFormatted() == "Morning"
+                            else " ",
+                        ),
+                    )
+                    for volunteer in volunteers
+                ],
+            ),
+        ),
+    )
 
-        if not volunteer_time_text:
-            volunteer_time_text = "????"
-
-        table_row.td(volunteer_time_text, klass="students")
-        # Leave a blank for manually filling in assigment
-        table_row.td(" ", klass="students")
-        if volunteer.VolunteerTime == "Morning":
-            table_row.td(klass="students").hr(style="border-top: 2px dotted black;")
-        else:
-            # Leave a blank for manually filling in assigment
-            table_row.td(" ", klass="students")
-
-    with open("outputs/volunteers.html", "wb") as rosterfile:
-        rosterfile.write(str(markup))
+    with open("outputs/volunteers.html", "w") as rosterfile:
+        rosterfile.write(html.render())
 
 
 def powerset(iterable):
