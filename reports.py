@@ -3,6 +3,7 @@ import htmlBuilder
 from htmlBuilder.tags import B, Body, Head, Hr, Html, Title, P, Table, Td, Th, Tr
 from htmlBuilder.attributes import Class, Style
 import logging
+from pathlib import Path
 
 from itertools import chain, combinations
 
@@ -39,13 +40,13 @@ TIME_STYLE_STRING = "text-align:right;"
 
 
 # pylint: disable=invalid-name
-def generate_CoachImport(session):
+def generate_CoachImport(session, output_directory):
     """
     Generate the CoachImport.csv file
     TeamID,First Name,Last Name,Email,Phone,Extension,Fax,Website
     @param session Session object
     """
-    with open("outputs/CoachImport.csv", "w") as csvfile:
+    with open(output_directory / Path("CoachImport.csv"), "w") as csvfile:
         csvwriter = csv.writer(csvfile)
 
         coaches = (
@@ -66,7 +67,7 @@ def generate_CoachImport(session):
             csvwriter.writerow(row)
 
 
-def generate_room_schedules(session):
+def generate_room_schedules(session, output_directory):
     """
     Generate HTML schedules of Decatheletes per speech room
     @param session Session object
@@ -113,11 +114,13 @@ def generate_room_schedules(session):
             ),
         )
 
-        with open("outputs/" + room.description() + ".html", "w") as rosterfile:
+        with open(
+            output_directory / Path(room.description() + ".html"), "w"
+        ) as rosterfile:
             rosterfile.write(html.render())
 
 
-def generate_rosters(session):
+def generate_rosters(session, output_directory):
     """
     Generate HTML rosters per school
     @param session Session object
@@ -232,13 +235,15 @@ def generate_rosters(session):
         )
 
         if len(students):
-            with open("outputs/" + school.SchoolName + ".html", "w") as rosterfile:
+            with open(
+                output_directory / Path(school.SchoolName + ".html"), "w"
+            ) as rosterfile:
                 rosterfile.write(html.render())
         # print(school.people)
 
 
 # pylint: disable=invalid-name
-def generate_StudentRooms(session):
+def generate_StudentRooms(session, output_directory):
     """
     Generate the StudentRooms.csv file
     Student Number,Team Number,First Name,Last Name,Speech Room,\
@@ -247,7 +252,7 @@ def generate_StudentRooms(session):
         CodeofConduct,ActivityForm
     @param session Session object
     """
-    with open("outputs/StudentRooms.csv", "w") as csvfile:
+    with open(output_directory / Path("StudentRooms.csv"), "w") as csvfile:
         csvwriter = csv.writer(csvfile)
 
         students = session.query(Person).order_by(Person.StudentID).all()
@@ -278,14 +283,14 @@ def generate_StudentRooms(session):
 
 
 # pylint: disable=invalid-name
-def generate_TeamImportData(session):
+def generate_TeamImportData(session, output_directory):
     """
     Generate the TeamImportData.csv file
     Number,School Name,Address1,Address2,City,State,Zip Code,Division,\
         Category,Region
     @param session Session object
     """
-    with open("outputs/TeamImportData.csv", "w") as csvfile:
+    with open(output_directory / Path("TeamImportData.csv"), "w") as csvfile:
         csvwriter = csv.writer(csvfile)
 
         for school in session.query(School).order_by(School.SchoolID):
@@ -366,7 +371,7 @@ def generate_totals(session):
     print("{:8} {}".format("Total", lunch_total))
 
 
-def generate_volunteer_list(session):
+def generate_volunteer_list(session, output_directory):
     """
     Generate a list of volunteers
     @param session Session object
@@ -418,7 +423,7 @@ def generate_volunteer_list(session):
         ),
     )
 
-    with open("outputs/volunteers.html", "w") as rosterfile:
+    with open(output_directory / Path("volunteers.html"), "w") as rosterfile:
         rosterfile.write(html.render())
 
 

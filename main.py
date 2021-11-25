@@ -1,6 +1,6 @@
 import argparse
-import distutils.dir_util
 import logging
+from pathlib import Path
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -35,18 +35,20 @@ def main():
 
     session = Session()
 
+    output_directory = Path("./outputs")
+
     # Ensure the output directory exists
-    distutils.dir_util.mkpath("outputs")
+    output_directory.mkdir(parents=True, exist_ok=True)
 
     if not args.test:
-        Online.generate_SchoolInformationFile(session)
-        Online.generate_StudentTeamInformationFile(session)
-        Reports.generate_TeamImportData(session)
-        Reports.generate_CoachImport(session)
-        Reports.generate_rosters(session)
-        Reports.generate_StudentRooms(session)
-        Reports.generate_room_schedules(session)
-        Reports.generate_volunteer_list(session)
+        Online.generate_SchoolInformationFile(session, output_directory)
+        Online.generate_StudentTeamInformationFile(session, output_directory)
+        Reports.generate_TeamImportData(session, output_directory)
+        Reports.generate_CoachImport(session, output_directory)
+        Reports.generate_rosters(session, output_directory)
+        Reports.generate_StudentRooms(session, output_directory)
+        Reports.generate_room_schedules(session, output_directory)
+        Reports.generate_volunteer_list(session, output_directory)
         Reports.generate_totals(session)
 
 

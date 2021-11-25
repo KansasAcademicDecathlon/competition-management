@@ -1,5 +1,6 @@
 import csv
 import logging
+from pathlib import Path
 
 from itertools import chain, combinations
 
@@ -11,13 +12,13 @@ from school import School
 logger = logging.getLogger(__name__)
 
 
-def generate_SchoolInformationFile(session):
+def generate_SchoolInformationFile(session, output_directory):
     """
     Generate a CSV School Information File for import into the USAD online testing system
     domain,school's name,school's contact - first name,school's contact - last name,school's city,state director's USAD state code for the school
     @param session Session object
     """
-    with open("outputs/SchoolInformationFile.csv", "w") as csvfile:
+    with open(output_directory / Path("SchoolInformationFile.csv"), "w") as csvfile:
         csvwriter = csv.writer(csvfile)
 
         for school in session.query(School).order_by(School.SchoolID):
@@ -48,13 +49,15 @@ def generate_SchoolInformationFile(session):
             csvwriter.writerow(row)
 
 
-def generate_StudentTeamInformationFile(session):
+def generate_StudentTeamInformationFile(session, output_directory):
     """
     Generate a CSV Student Team Information File for import into the USAD online testing system
     student ID,domain,First Name,Last Name,Division (HSV)
     @param session Session object
     """
-    with open("outputs/StudentTeamInformationFile.csv", "w") as csvfile:
+    with open(
+        output_directory / Path("StudentTeamInformationFile.csv"), "w"
+    ) as csvfile:
         csvwriter = csv.writer(csvfile)
 
         for student in (
