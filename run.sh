@@ -14,10 +14,10 @@ if [ ! -d "$VENV_DIR" ]; then
 fi
 
 if [ -d $VENV_DIR/Scripts ]; then
-    # shellcheck disable=SC1090
+    # shellcheck disable=SC1091
     source $VENV_DIR/Scripts/activate
 else
-    # shellcheck disable=SC1090
+    # shellcheck disable=SC1091
     source $VENV_DIR/bin/activate
 fi
 

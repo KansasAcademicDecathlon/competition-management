@@ -5,7 +5,7 @@ import sqlite3
 
 
 class Contest:
-    """ Contest database class """
+    """Contest database class"""
 
     def __init__(self):
         self.conn = None
