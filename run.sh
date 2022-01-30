@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 VENV_DIR="env"
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 if which py; then
     python_exec="py -3"
@@ -22,5 +23,5 @@ else
 fi
 
 python -m pip install -q --upgrade pip
-pip install -q -r requirements.txt
-python main.py "$@"
+pip install -q -r "$SCRIPT_DIR"/requirements.txt
+python "$SCRIPT_DIR"/main.py "$@"
