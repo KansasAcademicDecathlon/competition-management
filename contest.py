@@ -143,7 +143,7 @@ class Contest:
         query_string = """Select SchoolID, FirstName, LastName from Person
                         where Person.CategoryID=4"""
 
-        with open("CoachImport.csv", "w") as csvfile:
+        with open("CoachImport.csv", "w", newline="") as csvfile:
             csvwriter = csv.writer(csvfile)
 
             for coach in self.conn.execute(query_string):
@@ -174,7 +174,7 @@ class Contest:
             "Region",
         ]
 
-        with open("TeamImportData.csv", "w") as csvfile:
+        with open("TeamImportData.csv", "w", newline="") as csvfile:
             csvwriter = csv.writer(csvfile)
 
             for school in self.conn.execute("SELECT * FROM School"):
@@ -210,7 +210,7 @@ class Contest:
 
             logging.debug(students)
             # Create a CSV report for each school
-            with open(schoolName + ".csv", "w") as csvfile:
+            with open(schoolName + ".csv", "w", newline="") as csvfile:
                 csvwriter = csv.writer(csvfile)
                 # Write the team number
                 csvwriter.writerow(["Team Number", schoolID])

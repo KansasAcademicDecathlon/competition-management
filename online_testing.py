@@ -18,7 +18,9 @@ def generate_SchoolInformationFile(session, output_directory):
     domain,school's name,school's contact - first name,school's contact - last name,school's city,state director's USAD state code for the school
     @param session Session object
     """
-    with open(output_directory / Path("SchoolInformationFile.csv"), "w") as csvfile:
+    with open(
+        output_directory / Path("SchoolInformationFile.csv"), "w", newline=""
+    ) as csvfile:
         csvwriter = csv.writer(csvfile)
 
         for school in session.query(School).order_by(School.SchoolID):
@@ -56,7 +58,7 @@ def generate_StudentTeamInformationFile(session, output_directory):
     @param session Session object
     """
     with open(
-        output_directory / Path("StudentTeamInformationFile.csv"), "w"
+        output_directory / Path("StudentTeamInformationFile.csv"), "w", newline=""
     ) as csvfile:
         csvwriter = csv.writer(csvfile)
 

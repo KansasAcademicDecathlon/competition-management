@@ -46,7 +46,7 @@ def generate_CoachImport(session, output_directory):
     TeamID,First Name,Last Name,Email,Phone,Extension,Fax,Website
     @param session Session object
     """
-    with open(output_directory / Path("CoachImport.csv"), "w") as csvfile:
+    with open(output_directory / Path("CoachImport.csv"), "w", newline="") as csvfile:
         csvwriter = csv.writer(csvfile)
 
         coaches = (
@@ -252,7 +252,7 @@ def generate_StudentRooms(session, output_directory):
         CodeofConduct,ActivityForm
     @param session Session object
     """
-    with open(output_directory / Path("StudentRooms.csv"), "w") as csvfile:
+    with open(output_directory / Path("StudentRooms.csv"), "w", newline="") as csvfile:
         csvwriter = csv.writer(csvfile)
 
         students = session.query(Person).order_by(Person.StudentID).all()
@@ -290,7 +290,9 @@ def generate_TeamImportData(session, output_directory):
         Category,Region
     @param session Session object
     """
-    with open(output_directory / Path("TeamImportData.csv"), "w") as csvfile:
+    with open(
+        output_directory / Path("TeamImportData.csv"), "w", newline=""
+    ) as csvfile:
         csvwriter = csv.writer(csvfile)
 
         for school in session.query(School).order_by(School.SchoolID):
