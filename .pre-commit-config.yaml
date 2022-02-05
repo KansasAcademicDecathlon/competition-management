@@ -2,28 +2,28 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
+    rev: v4.1.0
     hooks:
     -   id: trailing-whitespace
     -   id: end-of-file-fixer
     -   id: check-yaml
     -   id: check-added-large-files
 -   repo: https://github.com/psf/black
-    rev: 21.11b1
+    rev: 22.1.0
     hooks:
     -   id: black
 -   repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.8.0.1
+    rev: v0.8.0.4
     hooks:
     -   id: shellcheck
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v2.29.1
+    rev: v2.31.0
     hooks:
     -   id: pyupgrade
         args: [--py3-plus]
 -   repo: https://github.com/jackdewinter/pymarkdown
-    rev: b5e8b3d95eb6b2ed97fce4e3a0aa076dc02bbc36
+    rev:  0.9.4
     hooks:
     -   id: pymarkdown
         # Limiting the line length makes editing difficult.
-        args: [-d, md013, --disable-version, scan]
+        args: [-d, md013, scan]
