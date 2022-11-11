@@ -11,3 +11,7 @@ Use the `run.sh` script to instantiate the Python Virtual Environment and run th
 ```shell
 run.sh  --database <path to database>
 ```
+
+## Rules
+
+All times must be in HH:MM:SS format.
