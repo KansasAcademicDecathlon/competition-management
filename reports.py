@@ -79,17 +79,19 @@ def generate_room_schedules(session, output_directory):
             .order_by(Person.SpeechTime)
         )
 
+        room_description = f"Speech Room {room.description()}"
+
         html = Html(
             [],
             Head(
                 [],
                 htmlBuilder.tags.Style([], TABLE_STYLE_STRING),
-                Title([], room.description()),
+                Title([], room_description),
             ),
             Body(
                 [],
                 # Room name
-                P([], B([], B([], room.description()))),
+                P([], B([], B([], room_description))),
                 Table(
                     [],
                     # Headers
