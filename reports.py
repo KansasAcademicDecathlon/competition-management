@@ -38,12 +38,70 @@ TABLE_STYLE_STRING = """
 TIME_STYLE_STRING = "text-align:right;"
 
 
+def generate_objective_room_schedules(session, output_directory):
+    """
+    Generate HTML schedules of Decatheletes per objective testing room
+    @param session Session object
+    @param output_directory Path object for output directory
+    """
+    for room in session.query(Room).filter_by(RoomKind="O").order_by(Room.RoomID):
+        students = (
+            session.query(Person)
+            .filter_by(TestingRoomID=room.RoomID)
+            .order_by(Person.TestingTime)
+        )
+
+        room_description = f"Speech Room {room.description()}"
+
+        html = Html(
+            [],
+            Head(
+                [],
+                htmlBuilder.tags.Style([], TABLE_STYLE_STRING),
+                Title([], room_description),
+            ),
+            Body(
+                [],
+                # Room name
+                P([], B([], B([], room_description))),
+                Table(
+                    [],
+                    # Headers
+                    Tr([], Th([], "Time"), Th([], "Student #"), Th([], "Name")),
+                    # List comprehension to create student rows
+                    [
+                        Tr(
+                            [],
+                            Td(
+                                [Style(TIME_STYLE_STRING)],
+                                student.TestingTimeFormatted(),
+                            ),
+                            Td(
+                                [Style(STUDENT_ID_STYLE_STRING)],
+                                str(student.StudentID),
+                            ),
+                            Td([], student.FullName()),
+                        )
+                        for student in students
+                    ],
+                ),
+            ),
+        )
+
+        with open(
+            output_directory / Path(room.description() + ".html"), "w"
+        ) as rosterfile:
+            rosterfile.write(html.render())
+
+
 def generate_room_schedules(session, output_directory):
     """
     Generate room schedules
     @param session Session object
+    @param output_directory Path object for output directory
     """
     generate_speech_room_schedules(session, output_directory)
+    generate_objective_room_schedules(session, output_directory)
 
 
 def generate_rosters(session, output_directory):
@@ -172,6 +230,7 @@ def generate_speech_room_schedules(session, output_directory):
     """
     Generate HTML schedules of Decatheletes per speech room
     @param session Session object
+    @param output_directory Path object for output directory
     """
     for room in session.query(Room).filter_by(RoomKind="S").order_by(Room.RoomID):
         students = (
