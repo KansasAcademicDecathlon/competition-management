@@ -40,57 +40,10 @@ TIME_STYLE_STRING = "text-align:right;"
 
 def generate_room_schedules(session, output_directory):
     """
-    Generate HTML schedules of Decatheletes per speech room
+    Generate room schedules
     @param session Session object
     """
-    for room in session.query(Room).filter_by(RoomKind="S").order_by(Room.RoomID):
-        students = (
-            session.query(Person)
-            .filter_by(SpeechRoomID=room.RoomID)
-            .order_by(Person.SpeechTime)
-        )
-
-        room_description = f"Speech Room {room.description()}"
-
-        html = Html(
-            [],
-            Head(
-                [],
-                htmlBuilder.tags.Style([], TABLE_STYLE_STRING),
-                Title([], room_description),
-            ),
-            Body(
-                [],
-                # Room name
-                P([], B([], B([], room_description))),
-                Table(
-                    [],
-                    # Headers
-                    Tr([], Th([], "Time"), Th([], "Student #"), Th([], "Name")),
-                    # List comprehension to create student rows
-                    [
-                        Tr(
-                            [],
-                            Td(
-                                [Style(TIME_STYLE_STRING)],
-                                student.SpeechTimeFormatted(),
-                            ),
-                            Td(
-                                [Style(STUDENT_ID_STYLE_STRING)],
-                                str(student.StudentID),
-                            ),
-                            Td([], student.FullName()),
-                        )
-                        for student in students
-                    ],
-                ),
-            ),
-        )
-
-        with open(
-            output_directory / Path(room.description() + ".html"), "w"
-        ) as rosterfile:
-            rosterfile.write(html.render())
+    generate_speech_room_schedules(session, output_directory)
 
 
 def generate_rosters(session, output_directory):
@@ -213,6 +166,61 @@ def generate_rosters(session, output_directory):
             ) as rosterfile:
                 rosterfile.write(html.render())
         # print(school.people)
+
+
+def generate_speech_room_schedules(session, output_directory):
+    """
+    Generate HTML schedules of Decatheletes per speech room
+    @param session Session object
+    """
+    for room in session.query(Room).filter_by(RoomKind="S").order_by(Room.RoomID):
+        students = (
+            session.query(Person)
+            .filter_by(SpeechRoomID=room.RoomID)
+            .order_by(Person.SpeechTime)
+        )
+
+        room_description = f"Speech Room {room.description()}"
+
+        html = Html(
+            [],
+            Head(
+                [],
+                htmlBuilder.tags.Style([], TABLE_STYLE_STRING),
+                Title([], room_description),
+            ),
+            Body(
+                [],
+                # Room name
+                P([], B([], B([], room_description))),
+                Table(
+                    [],
+                    # Headers
+                    Tr([], Th([], "Time"), Th([], "Student #"), Th([], "Name")),
+                    # List comprehension to create student rows
+                    [
+                        Tr(
+                            [],
+                            Td(
+                                [Style(TIME_STYLE_STRING)],
+                                student.SpeechTimeFormatted(),
+                            ),
+                            Td(
+                                [Style(STUDENT_ID_STYLE_STRING)],
+                                str(student.StudentID),
+                            ),
+                            Td([], student.FullName()),
+                        )
+                        for student in students
+                    ],
+                ),
+            ),
+        )
+
+        with open(
+            output_directory / Path(room.description() + ".html"), "w"
+        ) as rosterfile:
+            rosterfile.write(html.render())
 
 
 def generate_totals(session):
