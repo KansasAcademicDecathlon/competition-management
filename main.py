@@ -36,7 +36,7 @@ def main():
 
     session = Session()
 
-    output_directory = Path("./outputs")
+    output_directory = Path(args.database).parent / "outputs"
 
     # Ensure the output directory exists
     output_directory.mkdir(parents=True, exist_ok=True)
