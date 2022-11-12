@@ -7,6 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from base import Base
 import online_testing as Online
 import reports as Reports
+import csvGenerator
 
 
 def main():
@@ -43,10 +44,10 @@ def main():
     if not args.test:
         Online.generate_SchoolInformationFile(session, output_directory)
         Online.generate_StudentTeamInformationFile(session, output_directory)
-        Reports.generate_TeamImportData(session, output_directory)
-        Reports.generate_CoachImport(session, output_directory)
+        csvGenerator.generate_TeamImportData(session, output_directory)
+        csvGenerator.generate_CoachImport(session, output_directory)
         Reports.generate_rosters(session, output_directory)
-        Reports.generate_StudentRooms(session, output_directory)
+        csvGenerator.generate_StudentRooms(session, output_directory)
         Reports.generate_room_schedules(session, output_directory)
         Reports.generate_volunteer_list(session, output_directory)
         Reports.generate_totals(session)
