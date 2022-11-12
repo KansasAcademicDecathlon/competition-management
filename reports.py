@@ -140,7 +140,7 @@ def generate_rosters(session, output_directory):
         students = (
             session.query(Person)
             .filter_by(SchoolID=school.SchoolID)
-            .filter(Person.SchoolID.isnot(None))
+            .filter(Person.StudentID.isnot(None))
             .order_by(Person.StudentID)
             .all()
         )
