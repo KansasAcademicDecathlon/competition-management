@@ -51,7 +51,7 @@ def generate_objective_room_schedules(session, output_directory):
             .order_by(Person.TestingTime)
         )
 
-        room_description = f"Speech Room {room.description()}"
+        room_description = f"Objective Testing Room {room.description()}"
 
         html = Html(
             [],
